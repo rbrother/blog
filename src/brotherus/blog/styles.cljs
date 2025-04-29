@@ -1,12 +1,13 @@
-(ns woolcat.styles
+(ns brotherus.blog.styles
   (:require [spade.core :refer [defglobal]]))
 
-(def medium-font "20px")
+(def small-font "12px")
+(def medium-font "16px")
 (def large-font "30px")
 
 (def default-font
   {:color :black, :background-color :white
-   :font-family "Roboto"
+   :font-family "Libre Baskerville"
    :font-size medium-font
    :font-weight "400"})
 
@@ -17,10 +18,8 @@
   ;; [:div {:border "dotted 1px #888"}] ;; For debugging layouts
   [:body (assoc default-font :user-select "none" :padding "16px")]
   [:.main-title {:font-size "25px", :font-weight 400}]
-  [:div.chinese-name {:font-family "Noto Sans HK", :font-size "20px",
-                      :font-weight 500}]
   [:.logo-font {:font-family "fredericka the great" :font-size "90px"}]
-  [:.script {:font-family "badscript"}]
+  [:.small {:font-size small-font}]
   [:.large {:font-size large-font}]
   [:.relative {:position "relative"}]
   [:.absolute {:position "absolute"}]
@@ -29,6 +28,7 @@
   [:.margin-top {:margin-top "8px"}]
   [:.margin-right-32 {:margin-right "32px"}]
   [:.margin {:margin "8px"}]
+  [:.margin2 {:margin "16px"}]
   [:.bold {:font-weight "bold"}]
   [:.gray {:color "#AAA"}]
   [:div.flex {:display "flex" :align-items "center"}]
@@ -41,17 +41,14 @@
               :margin-left "auto", :margin-right "auto"}]
   [:div.product-table
    {:display "grid"
-    :grid-template-columns "repeat(5, 200px)"
+    :grid-template-columns "repeat(3, 300px)"
     :gap "40px"}]
   [:div.links-table
    {:display "grid"
-    :grid-template-columns "repeat(5, 200px)"
+    :grid-template-columns "repeat(3, 300px)"
     :gap "8px"}]
-  [:div.technique-table
-   {:display "grid"
-    :grid-template-columns "repeat(6, 120px)"
-    :gap "20px"}]
-  [:div.crop-container {:width "200px" :height "200px" :overflow "hidden" :position "relative"}]
+  [:div.article-box {:border "solid 1px gray"}]
+  [:div.crop-container {:width "298px" :height "160px" :overflow "hidden" :position "relative"}]
   [:img.cropped-image {:width "100%" :height "100%" :object-fit "cover"}]
   [:img.large-photo {:width "50%"}]
   [:div.grid {:display "grid"}]

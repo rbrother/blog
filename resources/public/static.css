@@ -1,13 +1,17 @@
-@font-face {
-    font-family: 'fredericka the great';
-    src: url('fonts/FrederickatheGreat-Regular.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
+.libre-baskerville-regular {
+  font-family: "Libre Baskerville", serif;
+  font-weight: 400;
+  font-style: normal;
 }
 
-@font-face {
-    font-family: 'badscript';
-    src: url('fonts/BadScript-Regular.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
+.libre-baskerville-bold {
+  font-family: "Libre Baskerville", serif;
+  font-weight: 700;
+  font-style: normal;
+}
+
+.libre-baskerville-regular-italic {
+  font-family: "Libre Baskerville", serif;
+  font-weight: 400;
+  font-style: italic;
 }

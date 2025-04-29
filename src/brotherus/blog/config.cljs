@@ -1,4 +1,4 @@
-(ns woolcat.config)
+(ns brotherus.blog.config)
 
 (def debug?
   ^boolean goog.DEBUG)

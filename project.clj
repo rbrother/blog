@@ -1,10 +1,10 @@
-(defproject woolcat "1.0"
+(defproject brotherus-blog "1.0"
 
   ;; NOTE: This is *dummy* project-file to satisfy IntelliJ IDEA intellisense needs.
   ;; We are now using Shadow-cljs.edn as the primary first-class project file.
 
-  :description "Woolcat"
-  :url "http://example.com/FIXME"
+  :description "Robert Brotherus Blog Software"
+  :url "http://www.brotherus.net"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
 

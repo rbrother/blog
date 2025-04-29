@@ -1,4 +1,4 @@
-(ns woolcat.core
+(ns brotherus.blog.core
   (:require
     [accountant.core :as accountant]
     [re-frame.core :as rf]
@@ -6,11 +6,11 @@
     [reagent-dev-tools.core :as dev-tools]
     [medley.core :refer [find-first]]
     [reagent.dom :as rdom]
-    [woolcat.config :as config]
-    [woolcat.db :as db]
-    [woolcat.styles]
-    [woolcat.info]
-    [woolcat.home :as home] ;; Needed for global styles
+    [brotherus.blog.config :as config]
+    [brotherus.blog.db :as db]
+    [brotherus.blog.styles]
+    [brotherus.blog.info]
+    [brotherus.blog.home :as home] ;; Needed for global styles
     ))
 
 (defn dev-setup []
@@ -26,9 +26,9 @@
     (rdom/render [home/main-panel] root-el)))
 
 (def routes
-  [{:regex #"/about", :dispatch [:woolcat.info/show-info]}
-   {:regex #"/item/(.+)", :dispatch [:woolcat.item-page/select-item]}
-   {:regex #"/items/(.+)", :dispatch [:woolcat.filters/select-items]}
+  [{:regex #"/about", :dispatch [:brotherus.blog.info/show-info]}
+   {:regex #"/item/(.+)", :dispatch [:brotherus.blog.item-page/select-item]}
+   {:regex #"/items/(.+)", :dispatch [:brotherus.blog.filters/select-items]}
    {:regex #".*", :dispatch [::home/home]} ;; Default route, match anything else
    ])
 

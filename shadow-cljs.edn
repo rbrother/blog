@@ -28,7 +28,7 @@
    :output-dir "resources/public/js/compiled"
    :asset-path "/js/compiled"
    :modules
-   {:app {:init-fn woolcat.core/init}}
+   {:app {:init-fn brotherus.blog.core/init}}
    :devtools
    {:preloads []}
    :dev

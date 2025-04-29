@@ -1,20 +1,16 @@
-(ns woolcat.item-page
+(ns brotherus.blog.item-page
   (:require [re-frame.core :as rf]
-            [woolcat.db :as db]))
-
-(defn show-tags? [tags]
-  (not= tags #{"Travel Log"}))
+            [brotherus.blog.db :as db]))
 
 (defn view []
   (let [item-id @(rf/subscribe [::selected-item])
-        {:keys [name tags photo description detail-photos folder] :as _item} (get db/products-index item-id)
+        {:keys [name tags photo description detail-photos folder] :as _item} (get db/articles-index item-id)
         all-photos (if (= folder :only-details)
                      detail-photos
                      (concat [photo] detail-photos))]
     [:<>
      [:div.col-span-2
-      (when (show-tags? tags)
-        (into [:div] (interpose ", " (for [tag tags] [:a {:href (str "/items/" tag)} tag]))))
+      (into [:div] (interpose ", " (for [tag tags] [:a {:href (str "/items/" tag)} tag])))
       [:p.main-title name]]
      (into [:<>]
            (for [{:keys [file title]} all-photos]
@@ -32,4 +28,6 @@
 
 (rf/reg-event-db ::select-item
   (fn [db [_ name]]
-    (assoc db :selected-item name)))
+    (-> db
+        (dissoc :page)
+        (assoc :selected-item name))))
