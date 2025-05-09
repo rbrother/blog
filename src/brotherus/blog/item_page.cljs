@@ -11,18 +11,19 @@
         content @(rf/subscribe [::article-html])
         {:keys [tags date] :as _item} (get db/articles-index item-id)
         mins (js/Math.round (/ (count content) 2000))]
-    (print (count content))
-    [:div.article
-     [:div {:style {:display "flex" :align-items "center"}}
-      [:div components/robert-small-pic]
-      [:div.small.margin "Robert J. Brotherus  •  " date "  •  " mins " min read"]]
-     (if content
-       [:div {:dangerouslySetInnerHTML {:__html content}}]
-       [:p "Loading..."])
-     (into [:div.small] (interpose " • " (for [tag tags] [:a {:href (str "/items/" tag)} tag])))
-     [:hr]
+    [:div.article-container
+     [:div.article-inner
+      [:div.article
+       [:div {:style {:display "flex" :align-items "center"}}
+        [:div components/robert-small-pic]
+        [:div.small.margin "Robert J. Brotherus  •  " date "  •  " mins " min read"]]
+       (if content
+         [:div {:dangerouslySetInnerHTML {:__html content}}]
+         [:p "Loading..."])
+       (into [:div.small] (interpose " • " (for [tag tags] [:a {:href (str "/posts/" tag)} tag])))
+       [:hr]
 
-     ]))
+       ]]]))
 
 ;; Subs
 

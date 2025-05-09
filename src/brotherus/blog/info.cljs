@@ -12,9 +12,9 @@
          Beckett is doing valuable work for a law-firm,
          but fired when his managers learn he is gay after he develops first signs of AIDS."]
      [:p "Beckett goes on to sue his ex-employer for discrimination and the main debate in
-         the court-room is whether Beckett was a good lawyer (and therefore fired for illegal reasons)
-         or a bad lawyer (therefore rightfully fired for his incompetence).
-         Pivotal moment is when Becketts defence attorney asks him in court why is he a good lawyer.
+         the court-room is whether Beckett was a good lawyer (and therefore fired with illegal discrimination)
+         or a bad lawyer (and therefore rightfully fired for his incompetence).
+         Pivotal moment is when Becketts defence attorney asks him in court why he thinks he is a good lawyer.
          Beckett answers: \" " [:i "Because I know the law and I love the law."] " \" "]
      [:p "To be good in something is to know it - to have competence - and to love it - to have passion.
          Passion and competence create a positive spiral of achievement that leads to further passion,

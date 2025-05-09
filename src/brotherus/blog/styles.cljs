@@ -37,11 +37,11 @@
                :background "#f33" :color "black" :font-weight "bold"
                :padding "8px" :align-items "center"}]
   [:div.top-level {:margin "0px" :padding "0px"}]
-  [:div.main-container {:background "#EEE"}]
   [:div.header {:background "black", :color "white", :padding "16px"
-                :font-family "Roboto", :font-size medium-font
+                :font-family "Roboto", :font-size medium-font, :font-weight 300
                 :display "grid", :grid-template-columns "auto 1fr"}]
-  [:div.main { :max-width "1000px", :margin-left "auto", :margin-right "auto"
+  [:div.article-container {:background "#EEE"}]
+  [:div.article-inner { :max-width "1000px", :margin-left "auto", :margin-right "auto"
               :padding "32px"
               :background "white"}]
   [:div.article { :margin-left "100px", :margin-right "100px", :padding-bottom "100px"

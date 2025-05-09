@@ -27,8 +27,8 @@
 
 (def routes
   [{:regex #"/about", :dispatch [:brotherus.blog.info/show-info]}
-   {:regex #"/item/(.+)", :dispatch [:brotherus.blog.item-page/select-item]}
-   {:regex #"/items/(.+)", :dispatch [:brotherus.blog.filters/select-items]}
+   {:regex #"/post/(.+)", :dispatch [:brotherus.blog.item-page/select-item]}
+   {:regex #"/posts/(.+)", :dispatch [:brotherus.blog.filters/select-items]}
    {:regex #".*", :dispatch [::home/home]} ;; Default route, match anything else
    ])
 

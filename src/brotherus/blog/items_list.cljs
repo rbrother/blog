@@ -8,7 +8,7 @@
     [:div.product-table.col-span-2]
     (for [{:keys [name id thumbnail date]} (filters/filter-articles articles tag)]
       [:div.article-box
-       [:a {:href (str "/item/" id)}
+       [:a {:href (str "/post/" id)}
         [:div.crop-container
          [:img.cropped-image {:src thumbnail}]]
         [:div.margin2 name]
