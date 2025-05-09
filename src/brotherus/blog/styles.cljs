@@ -1,7 +1,7 @@
 (ns brotherus.blog.styles
   (:require [spade.core :refer [defglobal]]))
 
-(def small-font "12px")
+(def small-font "14px")
 (def medium-font "18px")
 (def large-font "30px")
 
@@ -17,6 +17,8 @@
   defaults
   #_[:div {:border "dotted 1px #888"}] ;; For debugging layouts
   [:body (assoc default-font :user-select "none", :margin 0)]
+  [:a {:color "inherit", :text-decoration "none"}]
+  [:hr {:margin-top "24px", :margin-bottom "24px"}]
   [:.main-title {:font-size "25px", :font-weight 400}]
   [:.logo-font {:font-family "fredericka the great" :font-size "90px"}]
   [:.small {:font-size small-font}]
@@ -36,12 +38,16 @@
                :padding "8px" :align-items "center"}]
   [:div.top-level {:margin "0px" :padding "0px"}]
   [:div.main-container {:background "#EEE"}]
+  [:div.header {:background "black", :color "white", :padding "16px"
+                :font-family "Roboto", :font-size medium-font
+                :display "grid", :grid-template-columns "auto 1fr"}]
   [:div.main { :max-width "1000px", :margin-left "auto", :margin-right "auto"
-              :padding-top "32px"
+              :padding "32px"
               :background "white"}]
-  [:div.article { :margin-left "100px", :margin-right "100px", :line-height 1.6}]
+  [:div.article { :margin-left "100px", :margin-right "100px", :padding-bottom "100px"
+                 :line-height 1.6}]
   ["div.article img" {:width "800px"}]
-
+  ["div.article a" {:color "#40F"}]
   [:div.product-table
    {:display "grid"
     :grid-template-columns "repeat(3, 300px)"
@@ -57,7 +63,6 @@
   [:div.grid {:display "grid"}]
   [:div.justify-end {:justify-self "end"}]
   [:div.justify-center {:justify-self "center", :text-align "center"}]
-  [:a (merge light-font {:color "black", :text-decoration "none"})]
   [:.light-font light-font]
   )
 

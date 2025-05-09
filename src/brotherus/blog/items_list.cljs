@@ -1,6 +1,7 @@
 (ns brotherus.blog.items-list
   (:require [brotherus.blog.db :refer [articles]]
-            [brotherus.blog.filters :as filters]))
+            [brotherus.blog.filters :as filters]
+            [brotherus.blog.components :as components]))
 
 (defn view [tag]
   (into
@@ -12,7 +13,7 @@
          [:img.cropped-image {:src thumbnail}]]
         [:div.margin2 name]
         [:div.grid.margin2 {:style {:grid-template-columns "auto 1fr" :align-items "center"}}
-         [:div [:img {:src "images/robert.jpg" :style {:width "50px"}}]]
+         [:div components/robert-small-pic]
          [:div.small
           [:div "Robert J. Brotherus"]
           [:div date]]]]])))

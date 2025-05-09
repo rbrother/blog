@@ -3,18 +3,26 @@
             [day8.re-frame.http-fx]
             [ajax.core]
             ["marked" :as marked]
-            [brotherus.blog.db :as db]))
+            [brotherus.blog.db :as db]
+            [brotherus.blog.components :as components]))
 
 (defn view []
   (let [item-id @(rf/subscribe [::selected-item])
         content @(rf/subscribe [::article-html])
-        {:keys [tags] :as _item} (get db/articles-index item-id)]
-    [:div
-     (into [:div] (interpose ", " (for [tag tags] [:a {:href (str "/items/" tag)} tag])))
-     [:div.article
-      (if content
-        [:div {:dangerouslySetInnerHTML {:__html content}}]
-        [:p "Loading..."])]]))
+        {:keys [tags date] :as _item} (get db/articles-index item-id)
+        mins (js/Math.round (/ (count content) 2000))]
+    (print (count content))
+    [:div.article
+     [:div {:style {:display "flex" :align-items "center"}}
+      [:div components/robert-small-pic]
+      [:div.small.margin "Robert J. Brotherus  •  " date "  •  " mins " min read"]]
+     (if content
+       [:div {:dangerouslySetInnerHTML {:__html content}}]
+       [:p "Loading..."])
+     (into [:div.small] (interpose " • " (for [tag tags] [:a {:href (str "/items/" tag)} tag])))
+     [:hr]
+
+     ]))
 
 ;; Subs
 

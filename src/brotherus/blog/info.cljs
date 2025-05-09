@@ -4,7 +4,8 @@
 (defn view []
   [:div.col-span-2
    [:div {:style {:display "grid", :grid-template-columns "auto 1fr", :gap "32px"}}
-    [:div [:img {:src "images/Robert_Brotherus_portrait.avif"}]]
+    [:div [:img {:src "images/Robert_Brotherus_portrait.avif"
+                 :style {:width "300px" :border-radius "30%"}}]]
     [:div {:style {:max-width "600px" :justify-self "start" :align-self "start"}}
      [:p "In the 1993 movie " [:i "Philadelphia" ] ", Tom Hanks portrays a homosexual lawyer Andrew Beckett
          in the 1980's Philadelphia, inspired by the true story of lives of attorneys Geoffrey Bowers and Clarence Cain.
