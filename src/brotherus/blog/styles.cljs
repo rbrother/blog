@@ -2,7 +2,7 @@
   (:require [spade.core :refer [defglobal]]))
 
 (def small-font "12px")
-(def medium-font "16px")
+(def medium-font "18px")
 (def large-font "30px")
 
 (def default-font
@@ -15,8 +15,8 @@
 
 (defglobal
   defaults
-  ;; [:div {:border "dotted 1px #888"}] ;; For debugging layouts
-  [:body (assoc default-font :user-select "none" :padding "16px")]
+  #_[:div {:border "dotted 1px #888"}] ;; For debugging layouts
+  [:body (assoc default-font :user-select "none", :margin 0)]
   [:.main-title {:font-size "25px", :font-weight 400}]
   [:.logo-font {:font-family "fredericka the great" :font-size "90px"}]
   [:.small {:font-size small-font}]
@@ -26,7 +26,6 @@
   [:.pad {:padding "8px"}]
   [:.center {:text-align "center"}]
   [:.margin-top {:margin-top "8px"}]
-  [:.margin-right-32 {:margin-right "32px"}]
   [:.margin {:margin "8px"}]
   [:.margin2 {:margin "16px"}]
   [:.bold {:font-weight "bold"}]
@@ -35,10 +34,14 @@
   [:div.error {:display "grid" :grid-template-columns "1fr auto"
                :background "#f33" :color "black" :font-weight "bold"
                :padding "8px" :align-items "center"}]
-  [:div.main {:display "grid", :grid-template-columns "auto auto"
-              :grid-gap "32px"
-              :max-width "1200px"
-              :margin-left "auto", :margin-right "auto"}]
+  [:div.top-level {:margin "0px" :padding "0px"}]
+  [:div.main-container {:background "#EEE"}]
+  [:div.main { :max-width "1000px", :margin-left "auto", :margin-right "auto"
+              :padding-top "32px"
+              :background "white"}]
+  [:div.article { :margin-left "100px", :margin-right "100px", :line-height 1.6}]
+  ["div.article img" {:width "800px"}]
+
   [:div.product-table
    {:display "grid"
     :grid-template-columns "repeat(3, 300px)"
@@ -52,7 +55,6 @@
   [:img.cropped-image {:width "100%" :height "100%" :object-fit "cover"}]
   [:img.large-photo {:width "50%"}]
   [:div.grid {:display "grid"}]
-  [:div.col-span-2 {:grid-column "span 2"}]
   [:div.justify-end {:justify-self "end"}]
   [:div.justify-center {:justify-self "center", :text-align "center"}]
   [:a (merge light-font {:color "black", :text-decoration "none"})]

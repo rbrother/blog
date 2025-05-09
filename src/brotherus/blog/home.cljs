@@ -10,15 +10,16 @@
   (let [page @(rf/subscribe [::page])
         filter @(rf/subscribe [::filters/filter])
         selected-item @(rf/subscribe [::item-page/selected-item])]
-    [:div.main
-     [:div [:a {:href "/"}
-            [:div.main-title "Building Programs"]]]
-     [:div.justify-end
-      [:a.pad {:href "/about"} "About"]]
-     (cond
-       (= page :info) [info/view]
-       selected-item [item-page/view]
-       :else [items-list/view filter])]))
+    [:div.main-container
+     [:div.main
+      [:div [:a {:href "/"}
+             [:div.main-title "Building Programs"]]]
+      [:div.justify-end
+       [:a.pad {:href "/about"} "About"]]
+      (cond
+        (= page :info) [info/view]
+        selected-item [item-page/view]
+        :else [items-list/view filter])]]))
 
 ;; Subs
 
