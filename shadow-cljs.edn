@@ -15,6 +15,8 @@
   [hashp "0.2.2"]
   [binaryage/devtools "1.0.6"]
   [camel-snake-kebab "0.4.3"]
+  [day8.re-frame/http-fx "0.2.4"]
+  [cljs-ajax "0.8.4"]
   [venantius/accountant "0.2.5"] ;; Browser history management
   ]
 

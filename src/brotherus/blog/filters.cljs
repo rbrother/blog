@@ -1,7 +1,6 @@
 (ns brotherus.blog.filters
   (:require
-    [re-frame.core :as rf]
-    [brotherus.blog.db :refer [tags]]))
+    [re-frame.core :as rf]))
 
 ;; Helpers
 

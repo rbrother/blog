@@ -1,33 +1,44 @@
 (ns brotherus.blog.item-page
   (:require [re-frame.core :as rf]
+            [day8.re-frame.http-fx]
+            [ajax.core]
             [brotherus.blog.db :as db]))
 
 (defn view []
   (let [item-id @(rf/subscribe [::selected-item])
-        {:keys [name tags photo description detail-photos folder] :as _item} (get db/articles-index item-id)
-        all-photos (if (= folder :only-details)
-                     detail-photos
-                     (concat [photo] detail-photos))]
+        {:keys [name tags] :as _item} (get db/articles-index item-id)]
+    (print _item)
     [:<>
      [:div.col-span-2
       (into [:div] (interpose ", " (for [tag tags] [:a {:href (str "/items/" tag)} tag])))
-      [:p.main-title name]]
-     (into [:<>]
-           (for [{:keys [file title]} all-photos]
-             [:div.col-span-2.justify-center
-              [:img.large-photo {:src file}]
-              (when title [:div.light-font title])]))
-     [:div.col-span-2
-      [:div.light-font description]]]))
+      [:p.main-title name]]]))
 
 ;; Subs
 
 (rf/reg-sub ::selected-item (fn [db _] (:selected-item db)))
 
+(rf/reg-sub ::article-content (fn [db _] (:article-content db)))
+
 ;; Events
 
-(rf/reg-event-db ::select-item
-  (fn [db [_ name]]
-    (-> db
-        (dissoc :page)
-        (assoc :selected-item name))))
+(rf/reg-event-fx
+  ::select-item
+  (fn [{:keys [db]} [_ id]]
+    (let [{:keys [url]} (get db/articles-index id)]
+      {:db (-> db
+               (dissoc :page)
+               (assoc :selected-item id))
+       :http-xhrio {:method :get
+                    :uri url
+                    :timeout 8000
+                    :response-format (ajax.core/text-response-format)
+                    :on-success [::set-article-content]
+                    :on-failure [::set-article-content-failed]}})))
+
+(rf/reg-event-db ::set-article-content
+  (fn [db [_ content]]
+    (assoc db :article-content content)))
+
+(rf/reg-event-db ::set-article-content-failed
+  (fn [db [_ error]]
+    (assoc db :article-content (str "Failed to load content: " error))))
