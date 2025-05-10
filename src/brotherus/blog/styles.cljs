@@ -44,8 +44,7 @@
   [:div.article-inner { :max-width "1000px", :margin-left "auto", :margin-right "auto"
               :padding "32px"
               :background "white"}]
-  [:div.article { :margin-left "100px", :margin-right "100px", :padding-bottom "100px"
-                 :line-height 1.6}]
+  [:div.article { :margin-left "100px", :margin-right "100px", :line-height 1.6}]
   ["div.article img" {:width "800px"}]
   ["div.article a" {:color "#40F"}]
   [:div.product-table

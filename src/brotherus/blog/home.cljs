@@ -13,11 +13,9 @@
     [:div {:style {:position "absolute", :top "50%", :left "50%", :transform "translate(-50%, -50%)"
                    :background "black" :padding "32px 128px 32px 128px" :text-align "center"}}
      [:h1 {:style {:color "#FFF"}} "Building Programs"]
-     [:p {:style {:color "#888" :font-family "Roboto"}} "A Blog about Love for Programming"]]]
+     [:p {:style {:color "#888" :font-family "Roboto"}} "A Blog about Love for Creating Software"]]]
    [items-list/view "Computers"] ;; Default filter for the "Building Programs" blog, allows other blogs with other themes later based on filter
-   ]
-
-  )
+   ])
 
 (defn main-panel []
   (let [page @(rf/subscribe [::page])
@@ -31,9 +29,7 @@
        (= page :info) [info/view]
        selected-item [item-page/view]
        filter [items-list/view filter]
-       :else [blog-home]
-       )
-     ]))
+       :else [blog-home])]))
 
 ;; Subs
 

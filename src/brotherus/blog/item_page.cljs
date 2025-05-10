@@ -4,7 +4,8 @@
             [ajax.core]
             ["marked" :as marked]
             [brotherus.blog.db :as db]
-            [brotherus.blog.components :as components]))
+            [brotherus.blog.components :as components]
+            [brotherus.blog.items-list :as items-list]))
 
 (defn view []
   (let [item-id @(rf/subscribe [::selected-item])
@@ -21,9 +22,8 @@
          [:div {:dangerouslySetInnerHTML {:__html content}}]
          [:p "Loading..."])
        (into [:div.small] (interpose " • " (for [tag tags] [:a {:href (str "/posts/" tag)} tag])))
-       [:hr]
-
-       ]]]))
+       [:hr]]
+      [items-list/view]]]))
 
 ;; Subs
 

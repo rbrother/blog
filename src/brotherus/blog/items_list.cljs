@@ -4,16 +4,18 @@
             [brotherus.blog.components :as components]))
 
 (defn view [tag]
-  (into
-    [:div.product-table.col-span-2]
-    (for [{:keys [name id thumbnail date]} (filters/filter-articles articles tag)]
-      [:div.article-box
-       [:a {:href (str "/post/" id)}
-        [:div.crop-container
-         [:img.cropped-image {:src thumbnail}]]
-        [:div.margin2 name]
-        [:div.grid.margin2 {:style {:grid-template-columns "auto 1fr" :align-items "center"}}
-         [:div components/robert-small-pic]
-         [:div.small
-          [:div "Robert J. Brotherus"]
-          [:div date]]]]])))
+  [:div
+   [:div.article-inner
+    (into
+      [:div.product-table]
+      (for [{:keys [name id thumbnail date]} (filters/filter-articles articles tag)]
+        [:div.article-box
+         [:a {:href (str "/post/" id)}
+          [:div.crop-container
+           [:img.cropped-image {:src thumbnail}]]
+          [:div.margin2 name]
+          [:div.grid.margin2 {:style {:grid-template-columns "auto 1fr" :align-items "center"}}
+           [:div components/robert-small-pic]
+           [:div.small
+            [:div "Robert J. Brotherus"]
+            [:div date]]]]]))]])
