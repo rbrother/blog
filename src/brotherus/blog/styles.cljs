@@ -47,6 +47,8 @@
   [:div.article { :margin-left "100px", :margin-right "100px", :line-height 1.6}]
   ["div.article img" {:width "800px"}]
   ["div.article a" {:color "#40F"}]
+  ["div.article pre" {:background "#eee", :padding "8px 16px 8px 16px",
+                      :margin-left "16px", :font-size "16px"}]
   [:div.product-table
    {:display "grid"
     :grid-template-columns "repeat(3, 300px)"
