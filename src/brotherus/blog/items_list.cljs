@@ -12,7 +12,7 @@
         [:div.article-box
          [:a {:href (str "/post/" id)}
           [:div.crop-container
-           [:img.cropped-image {:src thumbnail}]]
+           [:img.cropped-image {:src (or thumbnail (str components/articles-base-url "/" id "/thumbnail.jpg"))}]]
           [:div.margin2 name]
           [:div.grid.margin2 {:style {:grid-template-columns "auto 1fr" :align-items "center"}}
            [:div components/robert-small-pic]
