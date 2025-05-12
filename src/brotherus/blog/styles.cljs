@@ -11,16 +11,17 @@
    :font-size medium-font
    :font-weight "400"})
 
-(def light-font {:font-weight 300})
-
 (defglobal
   defaults
   #_[:div {:border "dotted 1px #888"}] ;; For debugging layouts
-  [:body (assoc default-font :user-select "none", :margin 0)]
+  [:body (assoc default-font :margin 0)]
   [:a {:color "inherit", :text-decoration "none"}]
   [:hr {:margin-top "24px", :margin-bottom "24px"}]
   [:.main-title {:font-size "25px", :font-weight 400}]
-  [:.logo-font {:font-family "fredericka the great" :font-size "90px"}]
+  [:.roboto {:font-family "Roboto"}]
+  [:.roboto-bold {:font-family "Roboto", :font-weight 500}]
+  [:.roboto-light {:font-family "Roboto", :font-weight 300}]
+  [:.roboto-regular {:font-family "Roboto", :font-weight 400}]
   [:.small {:font-size small-font}]
   [:.large {:font-size large-font}]
   [:.relative {:position "relative"}]
@@ -33,9 +34,6 @@
   [:.bold {:font-weight "bold"}]
   [:.gray {:color "#AAA"}]
   [:div.flex {:display "flex" :align-items "center"}]
-  [:div.error {:display "grid" :grid-template-columns "1fr auto"
-               :background "#f33" :color "black" :font-weight "bold"
-               :padding "8px" :align-items "center"}]
   [:div.top-level {:margin "0px" :padding "0px"}]
   [:div.header {:background "black", :color "white", :padding "16px"
                 :font-family "Roboto", :font-size medium-font, :font-weight 300
@@ -64,6 +62,5 @@
   [:div.grid {:display "grid"}]
   [:div.justify-end {:justify-self "end"}]
   [:div.justify-center {:justify-self "center", :text-align "center"}]
-  [:.light-font light-font]
   )
 

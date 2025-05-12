@@ -1,5 +1,6 @@
 (ns brotherus.blog.home
   (:require
+    [brotherus.blog.components :as components]
     [re-frame.core :as rf]
     [brotherus.blog.filters :as filters]
     [brotherus.blog.item-page :as item-page]
@@ -8,14 +9,19 @@
 
 (defn blog-home []
   [:<>
-   [:div {:style {:width "100%", :position "relative", :display "inline-block"}}
-    [:img {:src "/images/background_tech_face.jpg" :style {:width "100%", :height "auto"}}]
-    [:div {:style {:position "absolute", :top "50%", :left "50%", :transform "translate(-50%, -50%)"
-                   :background "black" :padding "32px 128px 32px 128px" :text-align "center"}}
-     [:h1 {:style {:color "#FFF"}} "Building Programs"]
-     [:p {:style {:color "#888" :font-family "Roboto"}} "A Blog about Love for Creating Software"]]]
+   components/title-panel
    [items-list/view "Computers"] ;; Default filter for the "Building Programs" blog, allows other blogs with other themes later based on filter
-   ])
+   [:div.roboto-light {:style {:width "100%", :position "relative", :display "inline-block"}}
+    [:img {:src "/images/staircases_background.jpg" :style {:width "100%", :height "auto"}}]
+    [:div {:style {:position "absolute", :top "8%", :left "17%", :width "25%"}}
+     [:div " “In some ways, programming is like painting. You start with a blank canvas
+     and certain basic raw materials. You use a combination of science, art, and
+     craft to determine what to do with them.” "]
+     [:div [:i " - Andrew Hunt"]]]
+    [:div {:style {:position "absolute", :top "50%", :left "65%", :width "25%"}}
+     [:div " “Perfection is achieved not when there is nothing more to add,
+           but rather when there is nothing more to take away.”  "]
+     [:div [:i "– Antoine de Saint-Exupery"]]]]])
 
 (defn main-panel []
   (let [page @(rf/subscribe [::page])
