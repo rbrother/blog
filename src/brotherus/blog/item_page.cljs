@@ -7,20 +7,23 @@
             [brotherus.blog.components :as components]
             [brotherus.blog.items-list :as items-list]))
 
+(defn article-html []
+  (let [html @(rf/subscribe [::article-html])]
+    (if html
+      [:div {:dangerouslySetInnerHTML {:__html html}}]
+      [:p "Loading..."])))
+
 (defn view []
   (let [item-id @(rf/subscribe [::selected-item])
-        content @(rf/subscribe [::article-html])
         {:keys [tags date] :as _item} (get db/articles-index item-id)
-        mins (js/Math.round (/ (count content) 2000))]
+        mins @(rf/subscribe [::article-mins])]
     [:div.article-container
      [:div.article-inner
       [:div.article
        [:div {:style {:display "flex" :align-items "center"}}
         [:div components/robert-small-pic]
         [:div.small.margin "Robert J. Brotherus  •  " date "  •  " mins " min read"]]
-       (if content
-         [:div {:dangerouslySetInnerHTML {:__html content}}]
-         [:p "Loading..."])
+       [article-html]
        (into [:div.small] (interpose " • " (for [tag tags] [:a {:href (str "/posts/" tag)} tag])))
        [:hr]]
       [items-list/view]]]))
@@ -30,6 +33,9 @@
 (rf/reg-sub ::selected-item (fn [db _] (:selected-item db)))
 
 (rf/reg-sub ::article-content (fn [db _] (:article-content db)))
+
+(rf/reg-sub ::article-mins :<- [::article-content]
+            (fn [md _] (when md (js/Math.round (/ (count md) 2000)))))
 
 (rf/reg-sub ::article-html :<- [::article-content]
             (fn [md _] (when md (marked/parse md))))
@@ -43,12 +49,18 @@
       {:db (-> db
                (dissoc :page)
                (assoc :selected-item id))
-       :http-xhrio {:method :get
-                    :uri url
-                    :timeout 8000
-                    :response-format (ajax.core/text-response-format)
-                    :on-success [::set-article-content]
-                    :on-failure [::set-article-content-failed]}})))
+       :dispatch [::load-article (or url (str id "/article.md"))]})))
+
+(rf/reg-event-fx
+  ::load-article
+  (fn [{:keys [db]} [_ url]]
+    {:db db
+     :http-xhrio {:method :get
+                  :uri (str components/articles-base-url url)
+                  :timeout 8000
+                  :response-format (ajax.core/text-response-format)
+                  :on-success [::set-article-content]
+                  :on-failure [::set-article-content-failed]}}))
 
 (rf/reg-event-db ::set-article-content
                  (fn [db [_ content]]
