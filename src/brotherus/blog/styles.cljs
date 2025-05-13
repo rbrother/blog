@@ -39,14 +39,16 @@
                 :font-family "Roboto", :font-size medium-font, :font-weight 300
                 :display "grid", :grid-template-columns "auto 1fr"}]
   [:div.article-container {:background "#EEE"}]
-  [:div.article-inner { :max-width "1000px", :margin-left "auto", :margin-right "auto"
-              :padding "32px"
-              :background "white"}]
-  [:div.article { :margin-left "100px", :margin-right "100px", :line-height 1.6}]
-  ["div.article img" {:width "800px"}]
+  [:div.article-inner {:max-width "1000px", :margin-left "auto", :margin-right "auto"
+                       :padding "32px"
+                       :background "white"}]
+  [:div.article {:margin-left "100px", :margin-right "100px", :line-height 1.6}]
+  ["div.article img" {:max-width "800px" :max-height "500px"}]
   ["div.article a" {:color "#40F"}]
   ["div.article pre" {:background "#eee", :padding "8px 16px 8px 16px",
                       :margin-left "16px", :font-size "16px"}]
+  ["div.article blockquote" {:margin-left 0, :border-left "5px #bbf solid", :padding-left "24px"
+                             :font-style "italic"}]
   [:div.product-table
    {:display "grid"
     :grid-template-columns "repeat(3, 300px)"
