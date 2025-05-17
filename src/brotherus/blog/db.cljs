@@ -35,6 +35,17 @@
     :tags #{"Computers" "Programming" "Learning"}}
    {:name "From a Product company to a Consulting company", :id "from-a-product-company-to-a-consulting-company"
     :date "2020-02-06", :tags #{"Computers" "Programming" "Jobs" "Career"}}
+   {:name "Blast from my Commodore 64 Past", :id "ruletti-c64", :id2 "blast-from-my-commodore-64-past",
+    :date "2021-08-10", :tags #{"Computers" "Commodore" "Programming"}}
+   {:name "Diving into Ruletti-64 code", :id "ruletti-code",
+    :date "2021-08-25", :tags #{"Computers" "Commodore" "Programming"}}
+   {:name "Ruletti re-born after 34 years", :date "2021-09-09", :id "ruletti-reborn"
+    :id2 "ruletti-re-born-after-34-years", :tags #{"Computers" "Commodore" "Programming" "Clojure" "Re-Frame"}}
+   {:name "Developer experience in 1987 with C64 vs modern tools", :date "2021-12-18", :id "ruletti-developer-experience"
+    :id2 "developer-experience-in-1987-with-c64-vs-modern-tools", :tags #{"Computers" "Commodore" "Programming" "Development Tools"}}
+   {:name "From imperative C64 Basic to functional-reactive programming", :date "2022-02-06"
+    :id "ruletti-imperative-to-functional", :id2 "from-depths-of-imperative-programming-to-heights-of-functional-style"
+    :tags #{"Computers" "Programming" "Commodore" "Re-Frame" "Clojure" "ClojureScript"}}
    {:name "Creating the INFIA Spectrum Analysis Software in 1996-1998"
     :id "infia", :id2 "creating-the-infia-spectrum-analysis-software-in-1996-1998"
     :date "2024-12-21", :tags #{"Computers" "Programming" "Jobs" "Career"}}
@@ -50,4 +61,4 @@
 (def articles-index (index-by :id articles))
 
 (rf/reg-event-db ::initialize-db
-  (fn [_] {}))
+                 (fn [_] {}))
