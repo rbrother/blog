@@ -44,6 +44,7 @@
                        :background "white"}]
   [:div.article {:margin-left "100px", :margin-right "100px", :line-height 1.6}]
   ["div.article img" {:max-width "800px" :max-height "500px"}]
+  ["div.article img.fullsize" {:max-width "800px" :max-height "none"}]
   ["div.article a" {:color "#40F"}]
   ["div.article pre" {:background "#eee", :padding "8px 16px 8px 16px",
                       :margin-left "16px", :font-size "16px"}]
