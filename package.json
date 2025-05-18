@@ -7,6 +7,7 @@
     "build-report": "npx shadow-cljs run shadow.cljs.build-report app target/build-report.html"
   },
   "dependencies": {
+    "he": "^1.2.0",
     "marked": "^15.0.11",
     "react": "17.0.2",
     "react-dom": "17.0.2"

@@ -28,6 +28,7 @@
                  [cljs-ajax "0.8.4"]
                  [re-frame-utils "0.1.0"]
                  [camel-snake-kebab "0.4.3"]
+                 [taipei.404/html-to-hiccup "0.1.8"]
                  [venantius/accountant "0.2.5"] ;; Browser history management
                  ]
 

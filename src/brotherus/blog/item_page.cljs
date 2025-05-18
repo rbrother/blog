@@ -2,16 +2,15 @@
   (:require [re-frame.core :as rf]
             [day8.re-frame.http-fx]
             [ajax.core]
-            ["marked" :as marked]
             [brotherus.blog.db :as db]
             [brotherus.blog.components :as components]
-            [brotherus.blog.items-list :as items-list]))
+            [brotherus.blog.items-list :as items-list]
+            [brotherus.blog.article :as article]))
+
 
 (defn article-html []
   (let [html @(rf/subscribe [::article-html])]
-    (if html
-      [:div {:dangerouslySetInnerHTML {:__html html}}]
-      [:p "Loading..."])))
+    (or html [:p "Loading..."])))
 
 (defn view []
   (let [item-id @(rf/subscribe [::selected-item])
@@ -38,7 +37,8 @@
             (fn [md _] (when md (js/Math.round (/ (count md) 2000)))))
 
 (rf/reg-sub ::article-html :<- [::article-content]
-            (fn [md _] (when md (marked/parse md))))
+            (fn [markdown _]
+              (article/markdown-to-hiccup markdown)))
 
 ;; Events
 
