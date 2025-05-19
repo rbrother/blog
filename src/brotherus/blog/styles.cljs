@@ -14,6 +14,7 @@
 (defglobal
   defaults
   #_[:div {:border "dotted 1px #888"}] ;; For debugging layouts
+  #_[:p {:border "dotted 1px #888"}]
   [:body (assoc default-font :margin 0)]
   [:a {:color "inherit", :text-decoration "none"}]
   [:hr {:margin-top "24px", :margin-bottom "24px"}]
@@ -49,8 +50,7 @@
   ["div.article p:has(img):has(+ p small)" {:margin-bottom "0px"}]
   ["div.article p:has(small)" {:text-align "center" :margin-top "0px" :padding-top "0px"}]
   ["div.article a" {:color "#40F"}]
-  ["div.article pre" {:background "#eee", :padding "8px 16px 8px 16px",
-                      :margin-left "16px", :font-size "16px"}]
+  ["div.article pre code" {:overflow "visible", :background "#eee"}]
   ["div.article blockquote" {:margin-left 0, :border-left "5px #bbf solid", :padding-left "24px"
                              :font-style "italic"}]
   [:div.product-table

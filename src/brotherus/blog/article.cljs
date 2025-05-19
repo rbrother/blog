@@ -1,8 +1,17 @@
 (ns brotherus.blog.article
   (:require [clojure.walk :as walk]
-            ["marked" :as marked]
+            ["marked" :refer [Marked]]
+            ["marked-highlight" :refer [markedHighlight]]
             [taipei-404.html :refer [html->hiccup]]
-            ["he" :as he]))
+            ["he" :as he]
+            ["highlight.js/lib/core" :as hljs]
+            ["highlight.js/lib/languages/clojure" :as clj]
+            ["highlight.js/lib/languages/basic" :as basic]
+            ["highlight.js/lib/languages/plaintext" :as plaintext]))
+
+(.registerLanguage hljs "clojure" clj)
+(.registerLanguage hljs "basic" basic)
+(.registerLanguage hljs "plaintext" plaintext)
 
 (defn parse-node [[tag attr & children]]
   (if (map? attr)
@@ -26,12 +35,23 @@
                    (string? node) (he/decode node) ;; HTML entities produced by marked like &lt; &gt; etc. to actual chars
                    )))))
 
+(def marked-options
+  #js {:emptyLangClass "hljs"
+       :langPrefix "hljs language-"
+       :highlight (fn [code lang]
+                    (prn "highlight" lang)
+                    (println "code" code)
+                    (.-value (.highlight hljs code #js
+                            {:language (if (= lang "") "plaintext" lang)})))})
+
 (defn markdown-to-hiccup [markdown]
-  (some->> markdown
-           ;; marked/parse Uses GitHub-flavored markdown spec https://github.github.com/gfm/ ,
-           ;; a superset of CommonMark. This is good since GitHub can be used as a backup for
-           ;; rendering and reading the blog-articles in absence of this webapp.
-           marked/parse
-           html->hiccup
-           (into [:div])
-           preprocess))
+  (print "Parsing markdown...")
+  (let [mark (Marked. (markedHighlight marked-options))]
+    (some->> markdown
+             ;; marked/parse Uses GitHub-flavored markdown spec https://github.github.com/gfm/ ,
+             ;; a superset of CommonMark. This is good since GitHub can be used as a backup for
+             ;; rendering and reading the blog-articles in absence of this webapp.
+             (.parse mark)
+             html->hiccup
+             (into [:div])
+             preprocess)))
