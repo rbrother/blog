@@ -1,28 +1,31 @@
 (ns brotherus.blog.db
   (:require [medley.core :refer [index-by]]
-            [re-frame.core :as rf]))
+            [re-frame.core :as rf]
+            [cljs.pprint :refer [pprint]]))
 
 (def tags
-  [{:name "Computers"}
-   {:name "VIC-20"}
-   {:name "Commodore"}
-   {:name "Programming"}
-   {:name "Jobs"}
+  [{:name "Agile"}
+   {:name "AI"}
    {:name "Career"}
-   {:name "Learning"}
-   {:name "Development Tools"}
+   {:name "Chemistry"}
    {:name "Clojure"}
    {:name "ClojureScript"}
-   {:name "Re-Frame"}
+   {:name "Commodore"}
+   {:name "Computers"}
    {:name "C++"}
-   {:name "Science"}
-   {:name "Chemistry"}
-   {:name "Physical Chemistry"}
-   {:name "Fortran"}
    {:name "Delphi"}
-   {:name "Agile"}
-   {:name "AI"}
-   {:name "LLM"}])
+   {:name "Development Tools"}
+   {:name "Fortran"}
+   {:name "Jobs"}
+   {:name "Learning"}
+   {:name "LLM"}
+   {:name "Mathematics"}
+   {:name "Markdown"}
+   {:name "Physical Chemistry"}
+   {:name "Programming"}
+   {:name "Re-Frame"}
+   {:name "Science"}
+   {:name "VIC-20"}])
 
 ;; URL of articles should be eventually in form:
 ;;     https://www.brotherus.net/post/<id>
@@ -46,19 +49,45 @@
    {:name "From imperative C64 Basic to functional-reactive programming", :date "2022-02-06"
     :id "ruletti-imperative-to-functional", :id2 "from-depths-of-imperative-programming-to-heights-of-functional-style"
     :tags #{"Computers" "Programming" "Commodore" "Re-Frame" "Clojure" "ClojureScript"}}
+   {:name "Why do I like Programming so much?", :id "i-like-programming"
+    :id2 "why-do-i-like-programming-so-much", :date "2022-05-08"
+    :tags #{"Computers" "Programming" "Learning"}}
+   {:name "Excel-revolution at Steel Factory in 1989" :date "2022-05-29", :updated "2024-12-25"
+    :id "ovako-excel" :id2 "excel-revolution-at-steel-factory-in-1989",
+    :tags #{"Computers" "Programming" "Jobs" "Career"}}
+   {:name "Logistic Map Fractal", :id "logistic-map-fractal", :date "2022-10-14"
+    :tags #{"Computers" "Programming" "Learning"}}
+   {:name "My entry to Quantum Chemistry programming", :date "2023-01-03"
+    :id "entry-to-chemistry-programming", :id2 "starting-on-a-career-in-computational-quantum-chemistry"
+    :tags #{"Computers" "Programming" "C++" "Chemistry" "Physical Chemistry" "Mathematics" "Learning" "Career"}}
+   {:name "Death by Fortran Common Block", :id "death-by-fortran-common-block", :date "2024-01-17"
+    :tags #{"Computers" "Programming" "Fortran" "Chemistry" "Physical Chemistry"}}
    {:name "Creating the INFIA Spectrum Analysis Software in 1996-1998"
     :id "infia", :id2 "creating-the-infia-spectrum-analysis-software-in-1996-1998"
     :date "2024-12-21", :tags #{"Computers" "Programming" "Jobs" "Career"}}
-   {:name "Don't LLMs really have understanding?", :id "don-t-llms-really-have-understanding",
-    :date "2025-03-28", :url "llm-understanding/article.md"
-    :thumbnail "https://raw.githubusercontent.com/rbrother/articles/refs/heads/main/llm-understanding/thumbnail.jpg"
+   {:name "Don't LLMs really have understanding?", :date "2025-03-28"
+    :id "llm-understanding" :id2 "don-t-llms-really-have-understanding",
     :tags #{"Computers" "AI" "LLM"}}
-   {:name "Resurrecting Infia in 2025", :id "resurrecting-infia",
-    :date "2025-05-01", :url "resurrect-infia-2025/article.md"
-    :thumbnail "https://raw.githubusercontent.com/rbrother/articles/refs/heads/main/resurrect-infia-2025/thumbnail.jpg"
-    :tags #{"Computers" "Programming" "Development Tools" "Delphi"}}])
+
+   ;; Publish new version of blog first, this then:
+   #_{:name "Resurrecting Infia in 2025", :id "resurrect-infia-2025",
+      :date "2025-05-01" :tags #{"Computers" "Programming" "Development Tools" "Delphi"}}
+
+    ;; TODO convert drafts from Wix as well. Mark with "state: draft" which shows only in dev mode
+
+   #_{:name "The tech stack of this blog"
+    :id "blog-tech-stack", :date "2025-06-01"
+    :tags #{"Computers" "Programming" "Development Tools" "Clojure" "ClojureScript" "Re-Frame" "Markdown"}}
+
+
+   #_{:name "The Agile Manifesto and its 12 Principles"}
+
+
+   ])
 
 (def articles-index (index-by :id articles))
+
+;; TODO: Validate that all tags are found in tag-list and that tag-list does not have ophans
 
 (rf/reg-event-db ::initialize-db
                  (fn [_] {}))
