@@ -7,11 +7,19 @@
             ["highlight.js/lib/core" :as hljs]
             ["highlight.js/lib/languages/clojure" :as clj]
             ["highlight.js/lib/languages/basic" :as basic]
-            ["highlight.js/lib/languages/plaintext" :as plaintext]))
+            ["highlight.js/lib/languages/plaintext" :as plaintext]
+            ["highlight.js/lib/languages/css" :as css]
+            ["highlight.js/lib/languages/bash" :as bash]
+            ["highlight.js/lib/languages/delphi" :as delphi]
+            ["highlight.js/lib/languages/csharp" :as csharp]))
 
 (.registerLanguage hljs "clojure" clj)
 (.registerLanguage hljs "basic" basic)
 (.registerLanguage hljs "plaintext" plaintext)
+(.registerLanguage hljs "css" css)
+(.registerLanguage hljs "bash" bash)
+(.registerLanguage hljs "delphi" delphi)
+(.registerLanguage hljs "csharp" csharp)
 
 (defn parse-node [[tag attr & children]]
   (if (map? attr)
@@ -39,8 +47,6 @@
   #js {:emptyLangClass "hljs"
        :langPrefix "hljs language-"
        :highlight (fn [code lang]
-                    (prn "highlight" lang)
-                    (println "code" code)
                     (.-value (.highlight hljs code #js
                             {:language (if (= lang "") "plaintext" lang)})))})
 
