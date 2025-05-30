@@ -1,4 +1,5 @@
-(ns brotherus.blog.components)
+(ns brotherus.blog.components
+  (:require [re-frame.core :as rf]))
 
 (def articles-base-url "https://raw.githubusercontent.com/rbrother/articles/refs/heads/main/")
 
@@ -13,3 +14,14 @@
                   :background "black" :padding "16px 64px 16px 64px" :text-align "center"}}
     [:h1 {:style {:color "#FFF"}} "Building Programs"]
     [:p {:style {:color "#888" :font-family "Roboto"}} "A Blog about Love for Creating Software"]]])
+
+(defn error-view []
+  (let [error @(rf/subscribe [:error])]
+    (if error
+      [:div.error
+       [:h3 "Error"]
+       [:p error]])))
+
+;; Subscriptions
+
+(rf/reg-sub :error (fn [db _] (:error db)))

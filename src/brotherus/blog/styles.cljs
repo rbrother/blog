@@ -33,7 +33,7 @@
   [:.margin {:margin "8px"}]
   [:.margin2 {:margin "16px"}]
   [:.bold {:font-weight "bold"}]
-  [:.gray {:color "#AAA"}]
+  [:div.error {:margin "16px", :border "8px solid red" :padding "16px"}]
   [:div.flex {:display "flex" :align-items "center"}]
   [:div.top-level {:margin "0px" :padding "0px"}]
   [:div.header {:background "black", :color "white", :padding "16px"

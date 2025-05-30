@@ -10,6 +10,7 @@
 (defn blog-home []
   [:<>
    components/title-panel
+   [components/error-view]
    [items-list/view "Computers"] ;; Default filter for the "Building Programs" blog, allows other blogs with other themes later based on filter
    [:div.roboto-light {:style {:width "100%", :position "relative", :display "inline-block"}}
     [:img {:src "/images/staircases_background.jpg" :style {:width "100%", :height "auto"}}]
