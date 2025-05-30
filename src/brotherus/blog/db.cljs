@@ -87,6 +87,8 @@
 
 (def articles-index (index-by :id articles))
 
+(def articles-index2 (index-by :id2 articles)) ;; Old long ids for backward compatibility
+
 ;; TODO: Validate that all tags are found in tag-list and that tag-list does not have ophans
 
 (rf/reg-event-db ::initialize-db

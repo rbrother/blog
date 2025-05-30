@@ -2,11 +2,11 @@
   (:require [re-frame.core :as rf]
             [day8.re-frame.http-fx]
             [ajax.core]
+            [accountant.core :as accountant]
             [brotherus.blog.db :as db]
             [brotherus.blog.components :as components]
             [brotherus.blog.items-list :as items-list]
             [brotherus.blog.article :as article]))
-
 
 (defn article-html []
   (let [html @(rf/subscribe [::article-html])]
@@ -44,12 +44,18 @@
 
 (rf/reg-event-fx
   ::select-item
-  (fn [{:keys [db]} [_ id]]
-    (let [{:keys [url]} (get db/articles-index id)]
+  (fn [{:keys [db]} [_ id-raw]]
+    (if (get db/articles-index id-raw)
+      ;; Happy case: id-raw is a valid article short id
       {:db (-> db
-               (dissoc :page)
-               (assoc :selected-item id))
-       :dispatch [::load-article (or url (str id "/article.md"))]})))
+               (dissoc :page :error)
+               (assoc :selected-item id-raw))
+       :dispatch [::load-article (str id-raw "/article.md")]}
+      (if-let [id (get-in db/articles-index2 [id-raw :id])]
+        ;; Found old long id, redirect to new short id
+        (do (accountant/navigate! (str "/post/" id))
+            {:db db})
+        {:db (assoc db :error (str "Article not found: " id-raw))}))))
 
 (rf/reg-event-fx
   ::load-article

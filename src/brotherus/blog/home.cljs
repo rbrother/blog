@@ -45,4 +45,4 @@
 
 (rf/reg-event-db ::home
   (fn [db _]
-    (dissoc db :filter :selected-item :page :article-content)))
+    (dissoc db :filter :selected-item :page :article-content :error)))
