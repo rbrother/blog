@@ -40,9 +40,11 @@
 (rf/reg-sub ::article-mins :<- [::article-content]
             (fn [md _] (when md (js/Math.round (/ (count md) 2000)))))
 
-(rf/reg-sub ::article-html :<- [::article-content]
-            (fn [markdown _]
-              (article/markdown-to-hiccup markdown)))
+(rf/reg-sub ::article-html
+            :<- [::article-content]
+            :<- [::selected-item]
+            (fn [[markdown item-id] _]
+              (article/markdown-to-hiccup markdown {:item-id item-id})))
 
 (rf/reg-sub ::views (fn [db _] (:views db)))
 
@@ -73,7 +75,6 @@
 (rf/reg-event-fx
   ::counter-upped
   (fn [{{:keys [selected-item] :as db} :db} [_ response]]
-    (pprint response)
     (let [{orig-views :views} (get db/articles-index selected-item)
           views (:count response)
           new-views (max (inc orig-views) views)]
@@ -89,16 +90,14 @@
 
 (rf/reg-event-db
   ::counter-reset
-  (fn [db [_ response]]
+  (fn [db [_ _response]]
     (print "::counter-reset")
-    (pprint response)
     db))
 
 (rf/reg-event-db
   ::counter-reset-fail
-  (fn [db [_ response]]
+  (fn [db [_ _response]]
     (print "::counter-reset-fail")
-    (pprint response)
     db))
 
 (rf/reg-event-fx
