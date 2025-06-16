@@ -72,16 +72,18 @@
    {:name "Don't LLMs really have understanding?", :date "2025-03-28", :views 53
     :id "llm-understanding" :id-long "don-t-llms-really-have-understanding",
     :tags #{"Computers" "AI" "LLM"}}
+   {:name "From Wix to a custom blog-platform"
+    :id "blog-platform", :date "2025-06-11"
+    :tags #{"Computers" "Programming" "Development Tools" "Clojure" "ClojureScript" "Re-Frame" "Markdown"}}
 
-   ;; Publish new version of blog first, this then:
+   ;; Ready to publish:
+
    #_{:name "Resurrecting Infia in 2025", :id "resurrect-infia-2025",
       :date "2025-05-01" :tags #{"Computers" "Programming" "Development Tools" "Delphi"}}
 
+
     ;; TODO convert drafts from Wix as well. Mark with "state: draft" which shows only in dev mode
 
-   #_{:name "The tech stack of this blog"
-    :id "blog-platform", :date "2025-06-01"
-    :tags #{"Computers" "Programming" "Development Tools" "Clojure" "ClojureScript" "Re-Frame" "Markdown"}}
 
 
    #_{:name "The Agile Manifesto"}
