@@ -47,8 +47,8 @@
   ["div.article img" {:max-width "800px" :max-height "500px" }]
   ["div.article img.fullsize" {:max-width "800px" :max-height "none"}]
   ["div.article p:has(img)" {:display "flex" :justify-content "center"}]
-  ["div.article p:has(img):has(+ p small)" {:margin-bottom "0px"}]
-  ["div.article p:has(small)" {:text-align "center" :margin-top "0px" :padding-top "0px"}]
+  ["div.article p:has(img):has(+ p small)" {:margin-bottom "8px"}]
+  ["div.article p:has(small)" {:text-align "center" :margin-top "8px" :padding-top "0px"}]
   ["div.article a" {:color "#40F"}]
   ["div.article pre code" {:overflow "visible", :background "#eee"}]
   ["div.article blockquote" {:margin-left 0, :border-left "5px #bbf solid", :padding-left "24px"
