@@ -43,7 +43,7 @@
   [:div.article-inner {:max-width "1000px", :margin-left "auto", :margin-right "auto"
                        :padding "32px"
                        :background "white"}]
-  [:div.article {:margin-left "100px", :margin-right "100px", :line-height 1.6}]
+  [:div.article {:margin-left "clamp(16px, 8%, 100px)", :margin-right "clamp(16px, 8%, 100px)", :line-height 1.6}]
   ["div.article img" {:max-width "800px" :max-height "500px" }]
   ["div.article img.fullsize" {:max-width "800px" :max-height "none"}]
   ["div.article p:has(img)" {:display "flex" :justify-content "center"}]
