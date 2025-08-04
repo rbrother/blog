@@ -51,7 +51,7 @@
 (defn fix-image-links [img]
   (update-in img [1 :src] fix-image-src))
 
-(defn preprocess [hiccup]
+(defn postprocess [hiccup]
   (->> hiccup
        (walk/postwalk
          (fn [node]
@@ -79,4 +79,4 @@
                (.parse mark)
                html->hiccup
                (into [:div])
-               preprocess))))
+               postprocess))))
