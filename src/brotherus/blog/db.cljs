@@ -25,6 +25,7 @@
    {:name "Programming"}
    {:name "Re-Frame"}
    {:name "Science"}
+   {:name "SPA"}
    {:name "VIC-20"}])
 
 ;; URL of articles should be eventually in form:
@@ -75,6 +76,11 @@
    {:name "From Wix to a custom blog-platform"
     :id "blog-platform", :date "2025-06-11"
     :tags #{"Computers" "Programming" "Development Tools" "Clojure" "ClojureScript" "Re-Frame" "Markdown"}}
+   {:name "Tech stack of this blog app"
+    :id "blog-tech-stack", :date "2025-08-13"
+    :tags #{"Computers" "Programming" "Clojure" "ClojureScript" "Re-Frame" "Markdown" "SPA"}}
+
+
 
    ;; Ready to publish:
 
