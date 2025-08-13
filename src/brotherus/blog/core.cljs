@@ -38,17 +38,18 @@
 
 (defn setup-routes []
   (accountant/configure-navigation!
-    {:nav-handler (fn [raw-path]
-                    (print [:nav-handler raw-path])
-                    (js/window.scrollTo 0 0)
-                    ;; Filter away query parameters from the path, Facebook etc sometimes insert those
-                    (let [path (re-find #"^[^\?]+" raw-path)]
-                      (->> routes
-                           (map (fn [{:keys [regex] :as route}]
-                                  (assoc route :matches (re-matches regex path))))
-                           (find-first :matches)
-                           dispatch-route!)))
-     :path-exists? (fn [_path] true)})
+    {:nav-handler
+     (fn [raw-path]
+       (js/window.scrollTo 0 0)
+       ;; Filter away query parameters from the path, Facebook etc sometimes insert those
+       (let [path (re-find #"^[^\?]+" raw-path)]
+         (->> routes
+              (map (fn [{:keys [regex] :as route}]
+                     (assoc route :matches (re-matches regex path))))
+              (find-first :matches)
+              dispatch-route!)))
+     :path-exists? (fn [_path] true) ;; For absolute external links, this will not be called
+     })
   (accountant/dispatch-current!))
 
 (defn init []
