@@ -15,9 +15,8 @@
 
 (defn dev-setup []
   (when config/debug?
-    (do
-      (println "dev mode")
-      (dev-tools/start! {:state-atom re-frame.db/app-db}))))
+    (println "dev mode")
+    (dev-tools/start! {:state-atom re-frame.db/app-db})))
 
 (defn ^:dev/after-load mount-root []
   (rf/clear-subscription-cache!)

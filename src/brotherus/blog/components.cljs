@@ -17,7 +17,7 @@
 
 (defn error-view []
   (let [error @(rf/subscribe [:error])]
-    (if error
+    (when error
       [:div.error
        [:h3 "Error"]
        [:p error]])))
