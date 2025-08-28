@@ -18,3 +18,21 @@
 /.clj-kondo/.cache/
 /.clj-kondo
 /.lsp/.cache/
+
+# Lambda-specific
+lambda-deployment.zip
+*.zip
+
+# Terraform
+infrastructure/.terraform/
+infrastructure/.terraform.lock.hcl
+infrastructure/terraform.tfstate
+infrastructure/terraform.tfstate.backup
+infrastructure/*.tfvars
+
+# AWS
+.aws/
+
+# OS
+.DS_Store
+Thumbs.db

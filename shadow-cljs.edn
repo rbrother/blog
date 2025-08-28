@@ -37,4 +37,12 @@
    :dev
    {:compiler-options
     {:closure-defines
-     {}}}}}}
+     {}}}}
+
+  :lambda
+  {:target :node-library
+   :output-to "target/lambda/index.js"
+   :exports {:handler brotherus.blog.lambda/handler}
+   :compiler-options
+   {:optimizations :simple
+    :target :nodejs}}}}
