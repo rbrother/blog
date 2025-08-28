@@ -62,6 +62,34 @@ if (-not $SkipBuild) {
         Copy-Item "resources/public/images" "target/lambda/" -Recurse -ErrorAction SilentlyContinue
     }
 
+    Write-Host "Installing production dependencies for Lambda..." -ForegroundColor Yellow
+    # Create package.json for lambda with only production dependencies
+    $lambdaPackageJson = @{
+        name = "brotherus-blog-lambda"
+        version = "1.0.0"
+        dependencies = @{
+            "he" = "^1.2.0"
+            "highlight.js" = "^11.11.1"
+            "marked" = "^15.0.11"
+            "marked-highlight" = "^2.2.1"
+            "react" = "17.0.2"
+            "react-dom" = "17.0.2"
+            "aws-lambda" = "^1.0.7"
+            "node-fetch" = "^2.7.0"
+        }
+    } | ConvertTo-Json -Depth 3
+
+    $lambdaPackageJson | Out-File -FilePath "target/lambda/package.json" -Encoding UTF8
+
+    # Install dependencies in the lambda directory
+    Push-Location "target/lambda"
+    try {
+        npm install --production --no-package-lock
+        Write-Host "Lambda dependencies installed successfully" -ForegroundColor Green
+    } finally {
+        Pop-Location
+    }
+
     Write-Host "Creating Lambda deployment package..." -ForegroundColor Yellow
     # Create the deployment zip
     if (Test-Path "lambda-deployment.zip") {

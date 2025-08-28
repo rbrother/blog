@@ -157,9 +157,10 @@ resource "aws_apigatewayv2_stage" "blog_api_stage" {
 resource "aws_apigatewayv2_integration" "lambda_integration" {
   api_id = aws_apigatewayv2_api.blog_api.id
 
-  integration_uri    = aws_lambda_function.blog_lambda.invoke_arn
-  integration_type   = "AWS_PROXY"
-  integration_method = "POST"
+  integration_uri         = aws_lambda_function.blog_lambda.invoke_arn
+  integration_type        = "AWS_PROXY"
+  integration_method      = "POST"
+  payload_format_version  = "2.0"
 }
 
 resource "aws_apigatewayv2_route" "catch_all" {

@@ -90,7 +90,8 @@
 (defn handler
   "Main AWS Lambda handler function"
   [event context callback]
-  (let [path (or (.-path event) "/")
+  ;; API Gateway v2 (HTTP API) uses rawPath, v1 (REST API) uses path
+  (let [path (or (.-rawPath event) (.-path event) "/")
         route-info (parse-path path)]
 
     (js/console.log "Processing request for path:" path)
