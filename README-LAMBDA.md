@@ -34,9 +34,6 @@ The application now consists of:
 # Clean build
 .\build-lambda.ps1 -Clean
 
-# Development build with watch mode
-.\build-lambda.ps1 -Watch
-
 # Production build
 .\build-lambda.ps1
 ```
@@ -61,9 +58,6 @@ node -e "const handler = require('./index.js').handler; handler({path: '/', http
 
 # Deploy to staging
 .\deploy-lambda.ps1 -Environment staging
-
-# Deploy to specific region
-.\deploy-lambda.ps1 -Region us-west-2
 ```
 
 ### Code-Only Deployment

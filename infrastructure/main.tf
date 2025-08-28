@@ -8,15 +8,15 @@ terraform {
   }
 }
 
-provider "aws" {
-  region = var.aws_region
-}
-
-# Variables
+# Variables, these are given to teraform by the deploy-lambda.ps1 script
 variable "aws_region" {
   description = "AWS region"
   type        = string
-  default     = "us-east-1"
+  default     = "eu-north-1"
+}
+
+provider "aws" {
+  region = var.aws_region
 }
 
 variable "project_name" {
@@ -33,7 +33,7 @@ variable "environment" {
 
 # S3 bucket for static assets
 resource "aws_s3_bucket" "static_assets" {
-  bucket = "${var.project_name}-static-assets-${var.environment}"
+  bucket = "${var.project_name}-blog-static-assets-${var.environment}"
 }
 
 resource "aws_s3_bucket_public_access_block" "static_assets" {

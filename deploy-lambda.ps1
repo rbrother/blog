@@ -3,7 +3,7 @@
 
 param(
     [string]$Environment = "prod",
-    [string]$Region = "us-east-1",
+    [string]$Region = "eu-north-1",
     [switch]$SkipBuild = $false,
     [switch]$SkipInfra = $false
 )
