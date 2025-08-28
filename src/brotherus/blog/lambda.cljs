@@ -21,6 +21,7 @@
   (cond
     (= path "/") {:route :home}
     (= path "/about") {:route :about}
+    (= path "/posts") {:route :posts :tag nil}
     (str/starts-with? path "/post/") {:route :post :id (subs path 6)}
     (str/starts-with? path "/posts/") {:route :posts :tag (subs path 7)}
     :else {:route :not-found}))
@@ -89,7 +90,7 @@
 (defn handler
   "Main AWS Lambda handler function"
   [event context callback]
-  (let [path (get event "path" "/")
+  (let [path (or (.-path event) "/")
         route-info (parse-path path)]
 
     (js/console.log "Processing request for path:" path)
