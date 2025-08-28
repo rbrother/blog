@@ -15,16 +15,35 @@
   (.parse marked content))
 
 ;; URL parsing utilities
+(defn normalize-path
+  "Remove stage prefix from API Gateway path (e.g., '/prod/about' -> '/about')"
+  [path]
+  (if (and path (str/starts-with? path "/"))
+    (let [segments (str/split path #"/")
+          ;; Remove empty first segment and potential stage name
+          filtered-segments (filter seq segments)
+          ;; Check if first segment looks like a stage name (common patterns)
+          stage-patterns #{"prod" "dev" "test" "staging" "stage"}
+          cleaned-segments (if (and (seq filtered-segments)
+                                   (contains? stage-patterns (first filtered-segments)))
+                            (rest filtered-segments)
+                            filtered-segments)]
+      (if (empty? cleaned-segments)
+        "/"
+        (str "/" (str/join "/" cleaned-segments))))
+    "/"))
+
 (defn parse-path
   "Parse the request path and extract route information"
   [path]
-  (cond
-    (= path "/") {:route :home}
-    (= path "/about") {:route :about}
-    (= path "/posts") {:route :posts :tag nil}
-    (str/starts-with? path "/post/") {:route :post :id (subs path 6)}
-    (str/starts-with? path "/posts/") {:route :posts :tag (subs path 7)}
-    :else {:route :not-found}))
+  (let [normalized-path (normalize-path path)]
+    (cond
+      (= normalized-path "/") {:route :home}
+      (= normalized-path "/about") {:route :about}
+      (= normalized-path "/posts") {:route :posts :tag nil}
+      (str/starts-with? normalized-path "/post/") {:route :post :id (subs normalized-path 6)}
+      (str/starts-with? normalized-path "/posts/") {:route :posts :tag (subs normalized-path 7)}
+      :else {:route :not-found})))
 
 ;; Article fetching
 (defn fetch-article-content
