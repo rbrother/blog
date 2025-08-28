@@ -7,6 +7,7 @@ param(
 )
 
 Write-Host "Building ClojureScript Lambda Blog Application" -ForegroundColor Green
+Write-Host "Clean:$Clean    Watch:$Watch" -ForegroundColor Green
 
 if ($Clean) {
     Write-Host "Cleaning previous builds..." -ForegroundColor Yellow

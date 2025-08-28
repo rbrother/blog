@@ -32,13 +32,13 @@ The application now consists of:
 
 ```powershell
 # Clean build
-.\build.ps1 -Clean
+.\build-lambda.ps1 -Clean
 
 # Development build with watch mode
-.\build.ps1 -Watch
+.\build-lambda.ps1 -Watch
 
 # Production build
-.\build.ps1
+.\build-lambda.ps1
 ```
 
 ### Local Testing
