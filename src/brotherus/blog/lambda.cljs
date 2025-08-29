@@ -85,7 +85,7 @@
              (find-first :matches))
         params (->> matches rest (map js/decodeURIComponent))]
     (.log js/console "handler" raw-path path)
-    (-> (handler-function params)
+    (-> (apply handler-function params)
         (.then (fn [response]
                  (js/console.log "Response status:" (:statusCode response))
                  (callback nil (clj->js response))))

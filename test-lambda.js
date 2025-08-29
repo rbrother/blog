@@ -9,7 +9,7 @@ const testFilter = filterArg ? filterArg.split('=')[1] : null;
 const testRoutes = [
   { path: '/', description: 'Home page', expectedStatus: 200 },
   { path: '/about', description: 'About page', expectedStatus: 200 },
-  { path: '/posts', description: 'All posts (currently returns 404)', expectedStatus: 404 },
+  { path: '/posts', description: 'All posts', expectedStatus: 200 },
   { path: '/posts/tag/clojure', description: 'Posts tagged with clojure', expectedStatus: 200 },
   { path: '/post/blog-tech-stack', description: 'Tech stack post (should exist)', expectedStatus: 200 },
   { path: '/post/nonexistent-article', description: 'Non-existent post', expectedStatus: 404 },
