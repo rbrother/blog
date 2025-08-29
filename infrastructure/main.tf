@@ -25,15 +25,11 @@ variable "project_name" {
   default     = "brotherus-blog"
 }
 
-variable "environment" {
-  description = "Environment (dev, staging, prod)"
-  type        = string
-  default     = "prod"
-}
+
 
 # S3 bucket for static assets
 resource "aws_s3_bucket" "static_assets" {
-  bucket = "${var.project_name}-blog-static-assets-${var.environment}"
+  bucket = "${var.project_name}-blog-static-assets"
 }
 
 resource "aws_s3_bucket_public_access_block" "static_assets" {
@@ -78,7 +74,7 @@ resource "aws_s3_bucket_website_configuration" "static_assets" {
 
 # IAM role for Lambda
 resource "aws_iam_role" "lambda_role" {
-  name = "${var.project_name}-lambda-role-${var.environment}"
+  name = "${var.project_name}-lambda-role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -102,7 +98,7 @@ resource "aws_iam_role_policy_attachment" "lambda_basic" {
 # Lambda function
 resource "aws_lambda_function" "blog_lambda" {
   filename         = "../lambda-deployment.zip"
-  function_name    = "${var.project_name}-${var.environment}"
+  function_name    = var.project_name
   role            = aws_iam_role.lambda_role.arn
   handler         = "index.handler"
   runtime         = "nodejs18.x"
@@ -113,14 +109,14 @@ resource "aws_lambda_function" "blog_lambda" {
 
   environment {
     variables = {
-      NODE_ENV = var.environment
+      NODE_ENV = "production"
     }
   }
 }
 
 # API Gateway
 resource "aws_apigatewayv2_api" "blog_api" {
-  name          = "${var.project_name}-api-${var.environment}"
+  name          = "${var.project_name}-api"
   protocol_type = "HTTP"
   description   = "API Gateway for ${var.project_name}"
 
@@ -136,7 +132,7 @@ resource "aws_apigatewayv2_api" "blog_api" {
 
 resource "aws_apigatewayv2_stage" "blog_api_stage" {
   api_id      = aws_apigatewayv2_api.blog_api.id
-  name        = var.environment
+  name        = "$default"
   auto_deploy = true
 
   access_log_settings {
@@ -186,7 +182,7 @@ resource "aws_lambda_permission" "api_gateway" {
 
 # CloudWatch Log Group for API Gateway
 resource "aws_cloudwatch_log_group" "api_gateway" {
-  name              = "/aws/apigateway/${var.project_name}-${var.environment}"
+  name              = "/aws/apigateway/${var.project_name}"
   retention_in_days = 14
 }
 

@@ -2,13 +2,12 @@
 # This script builds the ClojureScript Lambda function and deploys it to AWS
 
 param(
-    [string]$Environment = "prod",
     [string]$Region = "eu-north-1",
     [switch]$SkipBuild = $false,
     [switch]$SkipInfra = $false
 )
 
-Write-Host "Starting deployment for environment: $Environment" -ForegroundColor Green
+Write-Host "Starting deployment" -ForegroundColor Green
 
 # Check prerequisites
 Write-Host "Checking prerequisites..." -ForegroundColor Yellow
@@ -128,14 +127,14 @@ if (-not $SkipInfra) {
         }
 
         # Plan the deployment
-        terraform plan -var="environment=$Environment" -var="aws_region=$Region"
+        terraform plan -var="aws_region=$Region"
         if ($LASTEXITCODE -ne 0) {
             Write-Error "Terraform plan failed"
             exit 1
         }
 
         # Apply the deployment
-        terraform apply -var="environment=$Environment" -var="aws_region=$Region" -auto-approve
+        terraform apply -var="aws_region=$Region" -auto-approve
         if ($LASTEXITCODE -ne 0) {
             Write-Error "Terraform apply failed"
             exit 1
@@ -159,7 +158,7 @@ if (-not $SkipInfra) {
     
     # Just update the Lambda function code if infrastructure already exists
     Write-Host "Updating Lambda function code..." -ForegroundColor Yellow
-    $FunctionName = "brotherus-blog-$Environment"
+    $FunctionName = "brotherus-blog"
     
     $updateResult = aws lambda update-function-code --function-name $FunctionName --zip-file fileb://lambda-deployment.zip --region $Region 2>&1
     if ($LASTEXITCODE -eq 0) {
