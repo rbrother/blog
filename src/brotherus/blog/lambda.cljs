@@ -9,29 +9,7 @@
    [medley.core :refer [find-first]]))
 
 ;; Node.js imports
-(def marked (nodejs/require "marked"))
 (def fetch (nodejs/require "node-fetch"))
-
-;; Helper functions for marked
-(defn parse-markdown [content]
-  (.parse marked content))
-
-;; Path normalization for API Gateway
-(defn normalize-path
-  "Remove stage prefix from API Gateway path (e.g., '/prod/about' -> '/about')"
-  [path]
-  (if (and path (str/starts-with? path "/"))
-    (let [segments (str/split path #"/")
-          filtered-segments (filter seq segments)
-          stage-patterns #{"prod" "dev" "test" "staging" "stage"}
-          cleaned-segments (if (and (seq filtered-segments)
-                                   (contains? stage-patterns (first filtered-segments)))
-                            (rest filtered-segments)
-                            filtered-segments)]
-      (if (empty? cleaned-segments)
-        "/"
-        (str "/" (str/join "/" cleaned-segments))))
-    "/"))
 
 ;; Article fetching
 (defn fetch-article-content
@@ -46,15 +24,15 @@
 ;; Route handlers
 (defn handle-home []
   (js/Promise.resolve
-    {:statusCode 200
-     :headers {"Content-Type" "text/html; charset=utf-8"}
-     :body (hiccup-to-html (render/render-home-page))}))
+   {:statusCode 200
+    :headers {"Content-Type" "text/html; charset=utf-8"}
+    :body (hiccup-to-html (render/render-home-page))}))
 
 (defn handle-about []
   (js/Promise.resolve
-    {:statusCode 200
-     :headers {"Content-Type" "text/html; charset=utf-8"}
-     :body (hiccup-to-html (render/render-about-page))}))
+   {:statusCode 200
+    :headers {"Content-Type" "text/html; charset=utf-8"}
+    :body (hiccup-to-html (render/render-about-page))}))
 
 (defn handle-post [id]
   (if-let [article-info (get db/articles-index id)]
@@ -66,22 +44,22 @@
                       :headers {"Content-Type" "text/html; charset=utf-8"}
                       :body (hiccup-to-html (render/render-article-page article-info hiccup-content))})))))
     (js/Promise.resolve
-      {:statusCode 404
-       :headers {"Content-Type" "text/html; charset=utf-8"}
-       :body (hiccup-to-html (render/render-404-page))})))
+     {:statusCode 404
+      :headers {"Content-Type" "text/html; charset=utf-8"}
+      :body (hiccup-to-html (render/render-404-page))})))
 
 (defn handle-posts [tag]
   (let [filtered-articles (filters/filter-articles db/articles tag)]
     (js/Promise.resolve
-      {:statusCode 200
-       :headers {"Content-Type" "text/html; charset=utf-8"}
-       :body (hiccup-to-html (render/render-posts-page tag filtered-articles))})))
+     {:statusCode 200
+      :headers {"Content-Type" "text/html; charset=utf-8"}
+      :body (hiccup-to-html (render/render-posts-page tag filtered-articles))})))
 
 (defn handle-not-found []
   (js/Promise.resolve
-    {:statusCode 404
-     :headers {"Content-Type" "text/html; charset=utf-8"}
-     :body (hiccup-to-html (render/render-404-page))}))
+   {:statusCode 404
+    :headers {"Content-Type" "text/html; charset=utf-8"}
+    :body (hiccup-to-html (render/render-404-page))}))
 
 (def routes
   [{:regex #"(?:/(?:prod|dev|qa))?/?", :function handle-home}
@@ -95,7 +73,7 @@
 (defn handler [event context callback]
   ;; API Gateway v2 (HTTP API) uses rawPath, v1 (REST API) uses path
   (let [raw-path (or (.-rawPath event) (.-path event) "/")
-        path (normalize-path (re-find #"^[^\?]+" raw-path))
+        path (re-find #"^[^\?]+" raw-path)
         {handler-function :function matches :matches}
         (->> routes
              (map (fn [{:keys [regex] :as route}]
