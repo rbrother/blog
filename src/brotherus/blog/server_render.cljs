@@ -1,6 +1,7 @@
 (ns brotherus.blog.server-render
   (:require-macros [hiccups.core :as hiccups :refer [html]])
   (:require
+   [brotherus.blog.config :as config]
    [brotherus.blog.db :as db]
    [brotherus.blog.filters :as filters]
    [brotherus.blog.styles :as styles]
@@ -46,7 +47,7 @@
   "Title panel component - returns Hiccup"
   []
   [:div {:style "width: 100%; position: relative; display: inline-block;"}
-   [:img {:src "/images/background_tech_face.jpg" :style "width: 100%; height: auto;"}]
+   [:img {:src (config/image-url "background_tech_face.jpg") :style "width: 100%; height: auto;"}]
    [:div {:style "position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: black; padding: 16px 64px 16px 64px; text-align: center;"}
     [:h1 {:style "color: #FFF;"} "Building Programs"]
     [:p {:style "color: #888; font-family: Roboto;"} "A Blog about Love for Creating Software"]]])
@@ -54,7 +55,7 @@
 (defn robert-small-pic
   "Robert's small profile picture - returns Hiccup"
   []
-  [:img {:src "/images/robert.jpg" :style "width: 50px; border-radius: 50%;"}])
+  [:img {:src (config/image-url "robert.jpg") :style "width: 50px; border-radius: 50%;"}])
 
 (defn article-box
   "Article box component - returns Hiccup"
@@ -87,7 +88,7 @@
      (title-panel-component)
      (articles-list filtered-articles)
      [:div.roboto-light {:style "width: 100%; position: relative; display: inline-block;"}
-      [:img {:src "/images/staircases_background.jpg" :style "width: 100%; height: auto;"}]
+      [:img {:src (config/image-url "staircases_background.jpg") :style "width: 100%; height: auto;"}]
       [:div {:style "position: absolute; top: 8%; left: 17%; width: 25%;"}
        [:div "\"In some ways, programming is like painting. You start with a blank canvas and certain basic raw materials. You use a combination of science, art, and craft to determine what to do with them.\""]
        [:div [:i "- Andrew Hunt"]]]
@@ -110,7 +111,7 @@
     (title-panel-component)
     [:div.article-inner
      [:div {:style "display: grid; grid-template-columns: auto 1fr; gap: 32px;"}
-      [:div [:img {:src "/images/Robert_Brotherus_portrait.avif"
+      [:div [:img {:src (config/image-url "Robert_Brotherus_portrait.avif")
                    :style "width: 400px; border-radius: 30%;"}]]
       [:div {:style "max-width: 600px; justify-self: start; align-self: start;"}
        [:h2 "About Robert J. Brotherus"]

@@ -145,6 +145,17 @@ if (-not $SkipInfra) {
         $LambdaName = terraform output -raw lambda_function_name
         $S3Bucket = terraform output -raw s3_bucket_name
 
+        # Upload static assets to S3
+        Write-Host "Uploading static assets to S3..." -ForegroundColor Yellow
+        if (Test-Path "../resources/public/images") {
+            aws s3 cp "../resources/public/images" "s3://$S3Bucket/images/" --recursive --region $Region
+            if ($LASTEXITCODE -eq 0) {
+                Write-Host "Static assets uploaded successfully!" -ForegroundColor Green
+            } else {
+                Write-Error "Failed to upload static assets to S3"
+            }
+        }
+
         Write-Host "Deployment completed successfully!" -ForegroundColor Green
         Write-Host "API Gateway URL: $ApiUrl" -ForegroundColor Cyan
         Write-Host "Lambda Function: $LambdaName" -ForegroundColor Cyan
@@ -159,7 +170,7 @@ if (-not $SkipInfra) {
     # Just update the Lambda function code if infrastructure already exists
     Write-Host "Updating Lambda function code..." -ForegroundColor Yellow
     $FunctionName = "brotherus-blog"
-    
+
     $updateResult = aws lambda update-function-code --function-name $FunctionName --zip-file fileb://lambda-deployment.zip --region $Region 2>&1
     if ($LASTEXITCODE -eq 0) {
         Write-Host "Lambda function code updated successfully!" -ForegroundColor Green
@@ -167,6 +178,18 @@ if (-not $SkipInfra) {
         Write-Error "Failed to update Lambda function code"
         Write-Error $updateResult
         exit 1
+    }
+
+    # Upload static assets to S3 even when skipping infrastructure
+    Write-Host "Uploading static assets to S3..." -ForegroundColor Yellow
+    $S3Bucket = "brotherus-blog-blog-static-assets"
+    if (Test-Path "resources/public/images") {
+        aws s3 cp "resources/public/images" "s3://$S3Bucket/images/" --recursive --region $Region
+        if ($LASTEXITCODE -eq 0) {
+            Write-Host "Static assets uploaded successfully!" -ForegroundColor Green
+        } else {
+            Write-Error "Failed to upload static assets to S3"
+        }
     }
 }
 
