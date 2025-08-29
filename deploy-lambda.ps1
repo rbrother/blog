@@ -161,11 +161,12 @@ if (-not $SkipInfra) {
     Write-Host "Updating Lambda function code..." -ForegroundColor Yellow
     $FunctionName = "brotherus-blog-$Environment"
     
-    aws lambda update-function-code --function-name $FunctionName --zip-file fileb://lambda-deployment.zip --region $Region
+    $updateResult = aws lambda update-function-code --function-name $FunctionName --zip-file fileb://lambda-deployment.zip --region $Region 2>&1
     if ($LASTEXITCODE -eq 0) {
         Write-Host "Lambda function code updated successfully!" -ForegroundColor Green
     } else {
         Write-Error "Failed to update Lambda function code"
+        Write-Error $updateResult
         exit 1
     }
 }
