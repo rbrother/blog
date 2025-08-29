@@ -1,7 +1,5 @@
 (ns brotherus.blog.db
-  (:require [medley.core :refer [index-by]]
-            [re-frame.core :as rf]
-            [cljs.pprint :refer [pprint]]))
+  (:require [medley.core :refer [index-by]]))
 
 (def tags
   [{:name "Agile"}
@@ -102,6 +100,3 @@
 (def articles-index2 (index-by :id-long articles)) ;; Old long ids for backward compatibility
 
 ;; TODO: Validate that all tags are found in tag-list and that tag-list does not have ophans
-
-(rf/reg-event-db ::initialize-db
-                 (fn [_] {}))

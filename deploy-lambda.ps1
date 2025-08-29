@@ -65,8 +65,6 @@ if (-not $SkipBuild) {
             "highlight.js" = "^11.11.1"
             "marked" = "^15.0.11"
             "marked-highlight" = "^2.2.1"
-            "react" = "17.0.2"
-            "react-dom" = "17.0.2"
             "aws-lambda" = "^1.0.7"
             "node-fetch" = "^2.7.0"
         }

@@ -1,24 +1,16 @@
 {
   "name": "brotherus-blog",
   "scripts": {
-    "ancient": "clojure -Sdeps '{:deps {com.github.liquidz/antq {:mvn/version \"RELEASE\"}}}' -m antq.core",
-    "watch": "npx shadow-cljs watch app browser-test karma-test",
     "watch-lambda": "npx shadow-cljs watch lambda",
-    "release": "npx shadow-cljs release app",
-    "release-lambda": "npx shadow-cljs release lambda",
-    "build-report": "npx shadow-cljs run shadow.cljs.build-report app target/build-report.html",
-    "package-lambda": "npm run release-lambda && cd target/lambda && zip -r ../../lambda-deployment.zip .",
-    "deploy": "aws lambda update-function-code --function-name brotherus-blog --zip-file fileb://lambda-deployment.zip"
+    "release-lambda": "npx shadow-cljs release lambda"
   },
   "dependencies": {
     "he": "^1.2.0",
     "highlight.js": "^11.11.1",
     "marked": "^15.0.11",
     "marked-highlight": "^2.2.1",
-    "react": "17.0.2",
-    "react-dom": "17.0.2",
     "aws-lambda": "^1.0.7",
-    "node-fetch": "^3.3.2"
+    "node-fetch": "^2.7.0"
   },
   "devDependencies": {
     "shadow-cljs": "2.28.19"
