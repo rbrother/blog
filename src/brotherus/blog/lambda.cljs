@@ -29,10 +29,12 @@
     :body (hiccup-to-html (render/render-home-page))}))
 
 (defn handle-about []
-  (js/Promise.resolve
-   {:statusCode 200
-    :headers {"Content-Type" "text/html; charset=utf-8"}
-    :body (hiccup-to-html (render/render-about-page))}))
+  (-> (fetch-article-content "about/article.md")
+      (.then (fn [markdown]
+               (let [hiccup-content (article/markdown-to-hiccup markdown {:item-id "about"})]
+                 {:statusCode 200
+                  :headers {"Content-Type" "text/html; charset=utf-8"}
+                  :body (hiccup-to-html (render/render-about-page hiccup-content))})))))
 
 (defn handle-post [id]
   (if-let [article-info (get db/articles-index id)]

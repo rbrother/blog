@@ -73,16 +73,12 @@
         [:div "Robert J. Brotherus"]
         [:div date]]]]]))
 
-(defn articles-list
-  "Articles list component - returns Hiccup"
-  [articles]
+(defn articles-list [articles]
   [:div.article-inner
    [:div.product-table
     (map article-box articles)]])
 
-(defn home-content
-  "Home page content - returns Hiccup"
-  []
+(defn home-content []
   (let [filtered-articles (filters/filter-articles db/articles "Computers")]
     [:div
      (title-panel-component)
@@ -90,21 +86,23 @@
      [:div.roboto-light {:style "width: 100%; position: relative; display: inline-block;"}
       [:img {:src (config/image-url "staircases_background.jpg") :style "width: 100%; height: auto;"}]
       [:div {:style "position: absolute; top: 8%; left: 17%; width: 25%;"}
-       [:div "\"In some ways, programming is like painting. You start with a blank canvas and certain basic raw materials. You use a combination of science, art, and craft to determine what to do with them.\""]
+       [:div "\"In some ways, programming is like painting. You start with a blank canvas and certain basic raw materials. 
+              You use a combination of science, art, and craft to determine what to do with them.\""]
        [:div [:i "- Andrew Hunt"]]]
       [:div {:style "position: absolute; top: 50%; left: 65%; width: 25%;"}
-       [:div "\"Perfection is achieved not when there is nothing more to add, but rather when there is nothing more to take away.\""]
+       [:div "\"Perfection is achieved not when there is nothing more to add, 
+              but rather when there is nothing more to take away.\""]
        [:div [:i "– Antoine de Saint-Exupery"]]]]]))
 
 ;; Page renderers
 (defn render-home-page []
-  (base-html-template
-   "Building Programs"
-   [:div
-    (header-component)
-    (home-content)]))
+  (base-html-template "Building Programs"
+                      [:div
+                       (header-component)
+                       (home-content)]))
 
-(defn render-about-page []
+(defn render-about-page [content-hiccup]
+  (js/console.log "render-about-page ****" (str content-hiccup))
   (base-html-template "About - Building Programs"
    [:div
     (header-component)
@@ -113,9 +111,8 @@
      [:div {:style "display: grid; grid-template-columns: auto 1fr; gap: 32px;"}
       [:div [:img {:src (config/image-url "Robert_Brotherus_portrait.avif")
                    :style "width: 400px; border-radius: 30%;"}]]
-      [:div {:style "max-width: 600px; justify-self: start; align-self: start;"}
-       [:h2 "About Robert J. Brotherus"]
-       [:p "Welcome to my blog about programming and software development..."]]]]]))
+      [:div {:style "max-width: 600px; justify-self: start; align-self: start;"} 
+       content-hiccup]]]]))
 
 (defn render-article-page [article hiccup-content]
   (let [{:keys [tags date name]} article

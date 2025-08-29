@@ -88,7 +88,7 @@ async function testLambda() {
       // Show content preview
       const bodyMatch = result.body.match(/<body[^>]*>([\s\S]*?)<\/body>/);
       const bodyContent = bodyMatch ? bodyMatch[1].trim() : result.body;
-      console.log('Body preview:', bodyContent.substring(0, 300));
+      console.log('Body:', bodyContent);
       console.log('\n');
       
     } catch (error) {
