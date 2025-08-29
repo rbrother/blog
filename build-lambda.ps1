@@ -19,14 +19,6 @@ if ($Clean) {
     }
 }
 
-# Install dependencies
-Write-Host "Installing dependencies..." -ForegroundColor Yellow
-npm install
-if ($LASTEXITCODE -ne 0) {
-    Write-Error "Failed to install npm dependencies"
-    exit 1
-}
-
 if ($Watch) {
     Write-Host "Starting watch mode for Lambda development..." -ForegroundColor Yellow
     npm run watch-lambda
