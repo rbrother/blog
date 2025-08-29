@@ -1,11 +1,12 @@
 (ns brotherus.blog.lambda
   (:require
-    [cljs.nodejs :as nodejs]
-    [medley.core :refer [find-first]]
-    [brotherus.blog.db :as db]
-    [brotherus.blog.filters :as filters]
-    [brotherus.blog.server-render :as render :refer [hiccup-to-html]]
-    [clojure.string :as str]))
+   [brotherus.blog.article :as article]
+   [brotherus.blog.db :as db]
+   [brotherus.blog.filters :as filters]
+   [brotherus.blog.server-render :as render :refer [hiccup-to-html]]
+   [cljs.nodejs :as nodejs]
+   [clojure.string :as str]
+   [medley.core :refer [find-first]]))
 
 ;; Node.js imports
 (def marked (nodejs/require "marked"))
@@ -56,14 +57,14 @@
      :body (hiccup-to-html (render/render-about-page))}))
 
 (defn handle-post [id]
-  (if-let [article (get db/articles-index id)]
-    (let [url (or (:url article) (str id "/article.md"))]
+  (if-let [article-info (get db/articles-index id)]
+    (let [url (or (:url article-info) (str id "/article.md"))]
       (-> (fetch-article-content url)
-          (.then (fn [content]
-                   (let [html-content (parse-markdown content)]
+          (.then (fn [markdown]
+                   (let [hiccup-content (article/markdown-to-hiccup markdown {:item-id id})]
                      {:statusCode 200
                       :headers {"Content-Type" "text/html; charset=utf-8"}
-                      :body (hiccup-to-html (render/render-article-page article html-content))})))))
+                      :body (hiccup-to-html (render/render-article-page article-info hiccup-content))})))))
     (js/Promise.resolve
       {:statusCode 404
        :headers {"Content-Type" "text/html; charset=utf-8"}

@@ -1,37 +1,23 @@
 (ns brotherus.blog.server-render
   (:require-macros [hiccups.core :as hiccups :refer [html]])
   (:require
-    [brotherus.blog.db :as db]
-    [brotherus.blog.filters :as filters]
-    [brotherus.blog.styles :as styles]
-    [garden.core :refer [css]]
-    [hiccups.runtime :as hiccupsrt]
-    [clojure.string :as str]))
+   [brotherus.blog.db :as db]
+   [brotherus.blog.filters :as filters]
+   [brotherus.blog.styles :as styles]
+   [garden.core :refer [css]]
+   [hiccups.runtime :as hiccupsrt]
+   [clojure.string :as str]))
 
 ;; CSS generation
-(defn generate-css []  
+(defn generate-css []
   (css styles/defaults))
 
-;; HTML conversion utilities
-(defn raw-html-marker
-  "Create a marker for raw HTML content"
-  [content]
-  (str "<!--RAW_HTML_START-->" content "<!--RAW_HTML_END-->"))
-
-(defn hiccup-to-html
-  "Convert Hiccup data structure to HTML string, handling raw HTML content"
-  [hiccup-data]
-  (let [html-str (str "<!DOCTYPE html>\n" (html hiccup-data))]
-    ;; Post-process to handle raw HTML content markers
-    (str/replace html-str
-                 #"&lt;!--RAW_HTML_START--&gt;(.*?)&lt;!--RAW_HTML_END--&gt;"
-                 (fn [[_ content]]
-                   ;; Decode HTML entities in the content
-                   (-> content
-                       (str/replace "&lt;" "<")
-                       (str/replace "&gt;" ">")
-                       (str/replace "&amp;" "&")
-                       (str/replace "&quot;" "\""))))))
+(defn hiccup-to-html [hiccup-data]
+  (-> (str "<!DOCTYPE html>\n" (html hiccup-data))
+      (str/replace "&lt;" "<")
+      (str/replace "&gt;" ">")
+      (str/replace "&amp;" "&")
+      (str/replace "&quot;" "\"")))
 
 (defn base-html-template [title content]
   [:html {:lang "en"}
@@ -110,20 +96,15 @@
        [:div [:i "– Antoine de Saint-Exupery"]]]]]))
 
 ;; Page renderers
-(defn render-home-page
-  "Render the home page - returns HTML string"
-  []
+(defn render-home-page []
   (base-html-template
    "Building Programs"
    [:div
     (header-component)
     (home-content)]))
 
-(defn render-about-page
-  "Render the about page - returns HTML string"
-  []
-  (base-html-template
-   "About - Building Programs"
+(defn render-about-page []
+  (base-html-template "About - Building Programs"
    [:div
     (header-component)
     (title-panel-component)
@@ -135,11 +116,9 @@
        [:h2 "About Robert J. Brotherus"]
        [:p "Welcome to my blog about programming and software development..."]]]]]))
 
-(defn render-article-page
-  "Render an individual article page - returns HTML string"
-  [article html-content]
+(defn render-article-page [article hiccup-content]
   (let [{:keys [tags date name]} article
-        mins (js/Math.round (/ (count html-content) 2000))]
+        mins (js/Math.round (/ (count (str hiccup-content)) 2000))]
     (base-html-template
      (str name " - Building Programs")
      [:div
@@ -150,15 +129,13 @@
          [:div {:style "display: flex; align-items: center;"}
           [:div (robert-small-pic)]
           [:div.small.margin (str "Robert J. Brotherus  •  " date "  •  " mins " min read")]]
-         [:div.article-content (raw-html-marker html-content)]
+         [:div.article-content hiccup-content]
          [:div.small
           (interpose " • " (map (fn [tag] [:a {:href (str "/posts/" tag)} tag]) tags))]
          [:hr]]
         (articles-list db/articles)]]])))
 
-(defn render-posts-page
-  "Render posts page filtered by tag - returns HTML string"
-  [tag articles]
+(defn render-posts-page [tag articles]
   (base-html-template
    (str tag " Posts - Building Programs")
    [:div
@@ -166,9 +143,7 @@
     (title-panel-component)
     (articles-list articles)]))
 
-(defn render-404-page
-  "Render 404 error page - returns HTML string"
-  []
+(defn render-404-page  []
   (base-html-template
    "Page Not Found - Building Programs"
    [:div
@@ -178,9 +153,7 @@
      [:p "The page you're looking for doesn't exist."]
      [:p [:a {:href "/"} "Return to home page"]]]]))
 
-(defn render-error-page
-  "Render error page - returns HTML string"
-  [error]
+(defn render-error-page [error]
   (base-html-template
    "Error - Building Programs"
    [:div
