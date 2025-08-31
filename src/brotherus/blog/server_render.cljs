@@ -9,23 +9,15 @@
    [hiccups.runtime :as hiccupsrt]
    [clojure.string :as str]))
 
-;; CSS generation
-(defn generate-css []
-  (css styles/defaults))
-
 (defn hiccup-to-html [hiccup-data]
-  (-> (str "<!DOCTYPE html>\n" (html hiccup-data))
-      (str/replace "&lt;" "<")
-      (str/replace "&gt;" ">")
-      (str/replace "&amp;" "&")
-      (str/replace "&quot;" "\"")))
+  (-> (str "<!DOCTYPE html>\n" (html hiccup-data))))
 
 (defn base-html-template [title content]
   [:html {:lang "en"}
    [:head
     [:meta {:charset "utf-8"}]
     [:meta {:name "viewport" :content "width=device-width,initial-scale=1"}]
-    [:style (generate-css)]
+    [:style (css styles/defaults)]
     [:link {:rel "preconnect" :href "https://fonts.googleapis.com"}]
     [:link {:rel "preconnect" :href "https://fonts.gstatic.com" :crossorigin true}]
     [:link {:href "https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap"
@@ -90,7 +82,7 @@
 ;; Page renderers
 (defn render-home-page []
   (base-html-template "Building Programs"
-                      [:div 
+                      [:div
                        (home-content)]))
 
 (defn render-about-page [content-hiccup]
@@ -109,7 +101,7 @@
         mins (js/Math.round (/ (count (str hiccup-content)) 2000))]
     (base-html-template
      (str name " - Building Programs")
-     [:div 
+     [:div
       [:div.article-container
        [:div.article-inner
         [:div.article

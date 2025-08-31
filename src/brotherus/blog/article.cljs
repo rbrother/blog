@@ -1,5 +1,6 @@
 (ns brotherus.blog.article
   (:require [clojure.walk :as walk]
+            [clojure.string :as str]
             ["marked" :refer [Marked]]
             ["marked-highlight" :refer [markedHighlight]]
             [taipei-404.html :refer [html->hiccup]]
@@ -68,11 +69,17 @@
                     (.-value (.highlight hljs code #js
                             {:language (if (= lang "") "plaintext" lang)})))})
 
+(defn escape-special-chars [s]
+  (-> s
+      (str/replace "<" "&lt;")
+      (str/replace ">" "&gt;")))
+
 (defn markdown-to-hiccup [markdown context]
   (binding [*rendering-context* context]
     (print "Parsing markdown...")
     (let [mark (Marked. (markedHighlight marked-options))]
       (some->> markdown
+               escape-special-chars
                ;; marked/parse Uses GitHub-flavored markdown spec https://github.github.com/gfm/ ,
                ;; a superset of CommonMark. This is good since GitHub can be used as a backup for
                ;; rendering and reading the blog-articles in absence of this webapp.
