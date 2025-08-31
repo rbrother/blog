@@ -47,9 +47,7 @@
     [:h1 {:style "color: #FFF;"} "Building Programs"]
     [:p {:style "color: #888; font-family: Roboto;"} "A Blog about Love for Creating Software"]]])
 
-(defn robert-small-pic
-  "Robert's small profile picture - returns Hiccup"
-  []
+(def robert-small-pic
   [:img {:src (config/image-url "robert.jpg") :style "width: 50px; border-radius: 50%;"}])
 
 (defn article-box
@@ -63,7 +61,7 @@
        [:img.cropped-image {:src thumb-url}]]
       [:div.margin2 name]
       [:div.grid.margin2 {:style "grid-template-columns: auto 1fr; align-items: center;"}
-       [:div (robert-small-pic)]
+       [:div robert-small-pic]
        [:div.small
         [:div "Robert J. Brotherus"]
         [:div date]]]]]))
@@ -116,7 +114,7 @@
        [:div.article-inner
         [:div.article
          [:div {:style "display: flex; align-items: center;"}
-          [:div (robert-small-pic)]
+          [:div robert-small-pic]
           [:div.small.margin (str "Robert J. Brotherus  •  " date "  •  " mins " min read")]]
          [:div.article-content hiccup-content]
          [:div.small
