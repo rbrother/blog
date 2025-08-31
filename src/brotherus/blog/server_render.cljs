@@ -34,14 +34,11 @@
             :rel "stylesheet"}]
     [:title title]]
    [:body
-    [:div#app.top-level content]]])
-
-(defn header-component
-  "Header component - returns Hiccup"
-  []
-  [:div.header
-   [:div [:a {:href "/"} "Building Programs Blog"]]
-   [:div.justify-end [:a {:href "/about"} "About"]]])
+    [:div#app.top-level
+     [:div.header
+      [:div [:a {:href "/"} "Building Programs Blog"]]
+      [:div.justify-end [:a {:href "/about"} "About"]]]
+     content]]])
 
 (defn title-panel-component
   "Title panel component - returns Hiccup"
@@ -97,30 +94,26 @@
 ;; Page renderers
 (defn render-home-page []
   (base-html-template "Building Programs"
-                      [:div
-                       (header-component)
+                      [:div 
                        (home-content)]))
 
 (defn render-about-page [content-hiccup]
-  (js/console.log "render-about-page ****" (str content-hiccup))
   (base-html-template "About - Building Programs"
-   [:div
-    (header-component)
-    (title-panel-component)
-    [:div.article-inner
-     [:div {:style "display: grid; grid-template-columns: auto 1fr; gap: 32px;"}
-      [:div [:img {:src (config/image-url "Robert_Brotherus_portrait.avif")
-                   :style "width: 400px; border-radius: 30%;"}]]
-      [:div {:style "max-width: 600px; justify-self: start; align-self: start;"} 
-       content-hiccup]]]]))
+                      [:div
+                       (title-panel-component)
+                       [:div.article-inner
+                        [:div {:style "display: grid; grid-template-columns: auto 1fr; gap: 32px;"}
+                         [:div [:img {:src (config/image-url "Robert_Brotherus_portrait.avif")
+                                      :style "width: 400px; border-radius: 30%;"}]]
+                         [:div {:style "max-width: 600px; justify-self: start; align-self: start;"}
+                          content-hiccup]]]]))
 
 (defn render-article-page [article hiccup-content]
   (let [{:keys [tags date name]} article
         mins (js/Math.round (/ (count (str hiccup-content)) 2000))]
     (base-html-template
      (str name " - Building Programs")
-     [:div
-      (header-component)
+     [:div 
       [:div.article-container
        [:div.article-inner
         [:div.article
@@ -137,7 +130,6 @@
   (base-html-template
    (str tag " Posts - Building Programs")
    [:div
-    (header-component)
     (title-panel-component)
     (articles-list articles)]))
 
@@ -145,7 +137,6 @@
   (base-html-template
    "Page Not Found - Building Programs"
    [:div
-    (header-component)
     [:div.article-inner
      [:h1 "Page Not Found"]
      [:p "The page you're looking for doesn't exist."]
@@ -155,7 +146,6 @@
   (base-html-template
    "Error - Building Programs"
    [:div
-    (header-component)
     [:div.article-inner
      [:h1 "An Error Occurred"]
      [:p "Sorry, something went wrong while processing your request."]
