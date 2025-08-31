@@ -23,18 +23,13 @@
 
 ;; Route handlers
 (defn handle-home []
-  (js/Promise.resolve
-   {:statusCode 200
-    :headers {"Content-Type" "text/html; charset=utf-8"}
-    :body (hiccup-to-html (render/render-home-page))}))
+  (js/Promise.resolve (render/render-home-page)))
 
 (defn handle-about []
   (-> (fetch-article-content "about/article.md")
       (.then (fn [markdown]
                (let [hiccup-content (article/markdown-to-hiccup markdown {:item-id "about"})]
-                 {:statusCode 200
-                  :headers {"Content-Type" "text/html; charset=utf-8"}
-                  :body (hiccup-to-html (render/render-about-page hiccup-content))})))))
+                 (render/render-about-page hiccup-content))))))
 
 (defn handle-post [id]
   (if-let [article-info (get db/articles-index id)]
@@ -42,26 +37,15 @@
       (-> (fetch-article-content url)
           (.then (fn [markdown]
                    (let [hiccup-content (article/markdown-to-hiccup markdown {:item-id id})]
-                     {:statusCode 200
-                      :headers {"Content-Type" "text/html; charset=utf-8"}
-                      :body (hiccup-to-html (render/render-article-page article-info hiccup-content))})))))
-    (js/Promise.resolve
-     {:statusCode 404
-      :headers {"Content-Type" "text/html; charset=utf-8"}
-      :body (hiccup-to-html (render/render-404-page))})))
+                     (render/render-article-page article-info hiccup-content))))))
+    (js/Promise.resolve (render/render-404-page))))
 
 (defn handle-posts [tag]
   (let [filtered-articles (filters/filter-articles db/articles tag)]
-    (js/Promise.resolve
-     {:statusCode 200
-      :headers {"Content-Type" "text/html; charset=utf-8"}
-      :body (hiccup-to-html (render/render-posts-page tag filtered-articles))})))
+    (js/Promise.resolve (render/render-posts-page tag filtered-articles))))
 
 (defn handle-not-found []
-  (js/Promise.resolve
-   {:statusCode 404
-    :headers {"Content-Type" "text/html; charset=utf-8"}
-    :body (hiccup-to-html (render/render-404-page))}))
+  (js/Promise.resolve (render/render-404-page)))
 
 (def routes
   [{:regex #"(?:/(?:prod|dev|qa))?/?", :function handle-home}
@@ -84,9 +68,10 @@
         params (->> matches rest (map js/decodeURIComponent))]
     (.log js/console "handler" raw-path path)
     (-> (apply handler-function params)
-        (.then (fn [response]
-                 (js/console.log "Response status:" (:statusCode response))
-                 (callback nil (clj->js response))))
+        (.then (fn [response-hiccup] 
+                 (callback nil (clj->js {:statusCode 200
+                                         :headers {"Content-Type" "text/html; charset=utf-8"}
+                                         :body (hiccup-to-html response-hiccup)}))))
         (.catch (fn [error]
                   (js/console.error "Error processing request:" error)
                   (callback nil (clj->js {:statusCode 500
