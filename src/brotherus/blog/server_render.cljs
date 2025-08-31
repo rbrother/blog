@@ -40,9 +40,7 @@
       [:div.justify-end [:a {:href "/about"} "About"]]]
      content]]])
 
-(defn title-panel-component
-  "Title panel component - returns Hiccup"
-  []
+(def title-panel-component
   [:div {:style "width: 100%; position: relative; display: inline-block;"}
    [:img {:src (config/image-url "background_tech_face.jpg") :style "width: 100%; height: auto;"}]
    [:div {:style "position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: black; padding: 16px 64px 16px 64px; text-align: center;"}
@@ -78,7 +76,7 @@
 (defn home-content []
   (let [filtered-articles (filters/filter-articles db/articles "Computers")]
     [:div
-     (title-panel-component)
+     title-panel-component
      (articles-list filtered-articles)
      [:div.roboto-light {:style "width: 100%; position: relative; display: inline-block;"}
       [:img {:src (config/image-url "staircases_background.jpg") :style "width: 100%; height: auto;"}]
@@ -100,7 +98,7 @@
 (defn render-about-page [content-hiccup]
   (base-html-template "About - Building Programs"
                       [:div
-                       (title-panel-component)
+                       title-panel-component
                        [:div.article-inner
                         [:div {:style "display: grid; grid-template-columns: auto 1fr; gap: 32px;"}
                          [:div [:img {:src (config/image-url "Robert_Brotherus_portrait.avif")
@@ -130,7 +128,7 @@
   (base-html-template
    (str tag " Posts - Building Programs")
    [:div
-    (title-panel-component)
+    title-panel-component
     (articles-list articles)]))
 
 (defn render-404-page  []
