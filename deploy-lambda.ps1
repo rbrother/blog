@@ -56,18 +56,8 @@ if (-not $SkipBuild) {
 
     Write-Host "Installing production dependencies for Lambda..." -ForegroundColor Yellow
     # Create package.json for lambda with only production dependencies
-    $lambdaPackageJson = @{
-        name = "brotherus-blog-lambda"
-        version = "1.0.0"
-        dependencies = @{
-            "highlight.js" = "^11.11.1"
-            "marked" = "^15.0.11"
-            "marked-highlight" = "^2.2.1"
-            "aws-lambda" = "^1.0.7"
-        }
-    } | ConvertTo-Json -Depth 3
 
-    $lambdaPackageJson | Out-File -FilePath "target/lambda/package.json" -Encoding UTF8
+    Copy-Item "package.json" "target/lambda/package.json" -Force
 
     # Install dependencies in the lambda directory
     Push-Location "target/lambda"
