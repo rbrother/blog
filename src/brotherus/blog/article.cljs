@@ -4,7 +4,6 @@
             ["marked" :refer [Marked]]
             ["marked-highlight" :refer [markedHighlight]]
             [taipei-404.html :refer [html->hiccup]]
-            ["he" :as he]
             ["highlight.js/lib/core" :as hljs]
             ["highlight.js/lib/languages/clojure" :as clj]
             ["highlight.js/lib/languages/basic" :as basic]
@@ -47,7 +46,7 @@
 
 (defn fix-image-src [src]
   (cond-> src
-          (relative-link? src) make-absolute-link))
+    (relative-link? src) make-absolute-link))
 
 (defn fix-image-links [img]
   (update-in img [1 :src] fix-image-src))
@@ -55,31 +54,23 @@
 (defn postprocess [hiccup]
   (->> hiccup
        (walk/postwalk
-         (fn [node]
-           (cond-> node
-                   (is-element? node :a) set-link-new-tab
-                   (is-element? node :img) fix-image-links
-                   (string? node) (he/decode node) ;; HTML entities produced by marked like &lt; &gt; etc. to actual chars
-                   )))))
+        (fn [node]
+          (cond-> node
+            (is-element? node :a) set-link-new-tab
+            (is-element? node :img) fix-image-links)))))
 
 (def marked-options
   #js {:emptyLangClass "hljs"
        :langPrefix "hljs language-"
        :highlight (fn [code lang]
-                    (.-value (.highlight hljs code #js
-                            {:language (if (= lang "") "plaintext" lang)})))})
-
-(defn escape-special-chars [s]
-  (-> s
-      (str/replace "<" "&lt;")
-      (str/replace ">" "&gt;")))
+                    (.-value (.highlight
+                              hljs code #js {:language (if (= lang "") "plaintext" lang)})))})
 
 (defn markdown-to-hiccup [markdown context]
   (binding [*rendering-context* context]
     (print "Parsing markdown...")
     (let [mark (Marked. (markedHighlight marked-options))]
       (some->> markdown
-               escape-special-chars
                ;; marked/parse Uses GitHub-flavored markdown spec https://github.github.com/gfm/ ,
                ;; a superset of CommonMark. This is good since GitHub can be used as a backup for
                ;; rendering and reading the blog-articles in absence of this webapp.
