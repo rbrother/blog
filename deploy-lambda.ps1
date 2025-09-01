@@ -60,7 +60,6 @@ if (-not $SkipBuild) {
         name = "brotherus-blog-lambda"
         version = "1.0.0"
         dependencies = @{
-            "he" = "^1.2.0"
             "highlight.js" = "^11.11.1"
             "marked" = "^15.0.11"
             "marked-highlight" = "^2.2.1"
