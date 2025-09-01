@@ -63,27 +63,9 @@ if (-not $SkipBuild) {
     Push-Location "target/lambda"
     try {
         npm install --production --no-package-lock --no-optional
-
-        # Remove unnecessary files to reduce package size
-        Write-Host "Optimizing package size..." -ForegroundColor Yellow
-
-        # Remove documentation and test files
-        Get-ChildItem -Path "node_modules" -Recurse -Include "*.md", "*.txt", "CHANGELOG*", "README*", "LICENSE*", "HISTORY*" | Remove-Item -Force -ErrorAction SilentlyContinue
-        Get-ChildItem -Path "node_modules" -Recurse -Directory -Include "test", "tests", "spec", "specs", "example", "examples", "doc", "docs", ".github" | Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
-
-        # Remove source maps and TypeScript definition files
-        Get-ChildItem -Path "node_modules" -Recurse -Include "*.map", "*.d.ts" | Remove-Item -Force -ErrorAction SilentlyContinue
-
         Write-Host "Lambda dependencies installed and optimized successfully" -ForegroundColor Green
     } finally {
         Pop-Location
-    }
-
-    Write-Host "Copying static assets to Lambda output..." -ForegroundColor Yellow
-    # Copy static assets that the Lambda function might need
-    if (Test-Path "target/lambda") {
-        Copy-Item "resources/public/static.css" "target/lambda/" -ErrorAction SilentlyContinue
-        Copy-Item "resources/public/images" "target/lambda/" -Recurse -ErrorAction SilentlyContinue
     }
 
     Write-Host "Creating Lambda deployment package..." -ForegroundColor Yellow
