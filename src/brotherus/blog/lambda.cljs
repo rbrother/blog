@@ -4,18 +4,14 @@
    [brotherus.blog.db :as db]
    [brotherus.blog.filters :as filters]
    [brotherus.blog.server-render :as render :refer [hiccup-to-html]]
-   [cljs.nodejs :as nodejs]
    [clojure.string :as str]
    [medley.core :refer [find-first]]))
-
-;; Node.js imports
-(def fetch (nodejs/require "node-fetch"))
 
 ;; Article fetching
 (defn fetch-article-content
   "Fetch article content from GitHub"
   [url]
-  (-> (fetch (str "https://raw.githubusercontent.com/rbrother/articles/refs/heads/main/" url))
+  (-> (js/fetch (str "https://raw.githubusercontent.com/rbrother/articles/refs/heads/main/" url))
       (.then #(.text %))
       (.catch #(do
                  (js/console.error "Failed to fetch article:" %)

@@ -65,7 +65,6 @@ if (-not $SkipBuild) {
             "marked" = "^15.0.11"
             "marked-highlight" = "^2.2.1"
             "aws-lambda" = "^1.0.7"
-            "node-fetch" = "^2.7.0"
         }
     } | ConvertTo-Json -Depth 3
 

@@ -68,7 +68,6 @@
 
 (defn markdown-to-hiccup [markdown context]
   (binding [*rendering-context* context]
-    (print "Parsing markdown...")
     (let [mark (Marked. (markedHighlight marked-options))]
       (some->> markdown
                ;; marked/parse Uses GitHub-flavored markdown spec https://github.github.com/gfm/ ,
