@@ -17,6 +17,18 @@
                  (js/console.error "Failed to fetch article:" %)
                  "Failed to load article content"))))
 
+;; Hit counter functionality
+(defn increment-view-counter
+  "Increment view counter for an article using counterapi.dev"
+  [article-id]
+  (let [counter-url (str "https://api.counterapi.dev/v1/building-programs-blog/" article-id "/up")]
+    (-> (js/fetch counter-url)
+        (.then #(.json %))
+        (.then (fn [response] (.-count response)))
+        (.catch (fn [error]
+                  (js/console.error "Failed to increment view counter for" article-id ":" error)
+                  nil)))))
+
 ;; Route handlers
 (defn handle-home []
   (js/Promise.resolve (render/render-home-page)))
@@ -30,10 +42,13 @@
 (defn handle-post [id]
   (if-let [article-info (get db/articles-index id)]
     (let [url (or (:url article-info) (str id "/article.md"))]
-      (-> (fetch-article-content url)
-          (.then (fn [markdown]
-                   (let [hiccup-content (article/markdown-to-hiccup markdown {:item-id id})]
-                     (render/render-article-page article-info hiccup-content))))))
+      ;; Increment view counter asynchronously (don't wait for it)
+      (-> (increment-view-counter id)
+          (.then (fn [new-count]
+                   (-> (fetch-article-content url)
+                       (.then (fn [markdown]
+                                (let [hiccup-content (article/markdown-to-hiccup markdown {:item-id id})]
+                                  (render/render-article-page article-info hiccup-content new-count)))))))))
     (js/Promise.resolve (render/render-404-page))))
 
 (defn handle-posts [tag]

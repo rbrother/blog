@@ -97,8 +97,8 @@
                          [:div {:style "max-width: 600px; justify-self: start; align-self: start;"}
                           content-hiccup]]]]))
 
-(defn render-article-page [article hiccup-content]
-  (let [{:keys [tags date name]} article
+(defn render-article-page [article hiccup-content new-count]
+  (let [{:keys [tags date name views]} article
         mins (js/Math.round (/ (count (str hiccup-content)) 2000))]
     (base-html-template
      (str name " - Building Programs")
@@ -108,7 +108,7 @@
         [:div.article
          [:div {:style "display: flex; align-items: center;"}
           [:div robert-small-pic]
-          [:div.small.margin (str "Robert J. Brotherus  •  " date "  •  " mins " min read")]]
+          [:div.small.margin (str "Robert J. Brotherus  •  " date "  •  " mins " min read  •  " new-count " views")]]
          [:div.article-content hiccup-content]
          [:div.small
           (interpose " • " (map (fn [tag] [:a {:href (str "/posts/" tag)} tag]) tags))]
