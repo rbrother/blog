@@ -75,9 +75,8 @@ if (-not $SkipBuild) {
     }
 
     Push-Location "target/lambda"
-    try {
-        # Use PowerShell's Compress-Archive instead of zip command for Windows compatibility
-        Compress-Archive -Path "*" -DestinationPath "../../lambda-deployment.zip" -Force
+    try {        
+        bestzip ../../lambda-deployment.zip *
         Write-Host "Lambda deployment package created: lambda-deployment.zip" -ForegroundColor Green
     } finally {
         Pop-Location
