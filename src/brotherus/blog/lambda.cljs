@@ -69,7 +69,8 @@
 ;; Main Lambda handler
 (defn handler [event context callback]
   ;; API Gateway v2 (HTTP API) uses rawPath, v1 (REST API) uses path
-  (let [raw-path (or (.-rawPath event) (.-path event) "/")
+  (let [start-time (.now js/Date)
+        raw-path (or (.-rawPath event) (.-path event) "/")
         path (re-find #"^[^\?]+" raw-path)
         {handler-function :function matches :matches}
         (->> routes
@@ -80,9 +81,11 @@
     (.log js/console "handler" raw-path path)
     (-> (apply handler-function params)
         (.then (fn [response-hiccup] 
-                 (callback nil (clj->js {:statusCode 200
-                                         :headers {"Content-Type" "text/html; charset=utf-8"}
-                                         :body (hiccup-to-html response-hiccup)}))))
+                 (let [elapsed-time (- (.now js/Date) start-time)]
+                   (callback nil (clj->js {:statusCode 200
+                                           :headers {"Content-Type" "text/html; charset=utf-8"
+                                                     "Server-Timing" (str "t;dur=" elapsed-time)}
+                                           :body (hiccup-to-html response-hiccup)})))))
         (.catch (fn [error]
                   (js/console.error "Error processing request:" error)
                   (callback nil (clj->js {:statusCode 500
