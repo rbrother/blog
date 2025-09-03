@@ -41,6 +41,7 @@
 
 (defn handle-post [id]
   (if-let [article-info (get db/articles-index id)]
+    ;; Found by short ID - serve the article
     (let [url (or (:url article-info) (str id "/article.md"))]
       ;; Increment view counter asynchronously (don't wait for it)
       (-> (increment-view-counter id)
@@ -49,7 +50,19 @@
                        (.then (fn [markdown]
                                 (let [hiccup-content (article/markdown-to-hiccup markdown {:item-id id})]
                                   (render/render-article-page article-info hiccup-content new-count)))))))))
-    (js/Promise.resolve (render/render-404-page))))
+    ;; Not found by short ID - check if it's a long ID
+    (if-let [article-info (get db/articles-index2 id)]
+      ;; Found by long ID - redirect to short ID
+      (let [short-id (:id article-info)]
+        (js/Promise.resolve
+         {:statusCode 301
+          :headers {"Location" (str "/post/" short-id)
+                    "Content-Type" "text/html; charset=utf-8"}
+          :body (str "<!DOCTYPE html><html><head><title>Redirecting...</title></head>"
+                     "<body><p>Redirecting to <a href=\"/post/" short-id "\">/post/" short-id "</a></p>"
+                     "<script>window.location.href='/post/" short-id "';</script></body></html>")}))
+      ;; Not found in either index - 404
+      (js/Promise.resolve (render/render-404-page)))))
 
 (defn handle-posts [tag]
   (let [filtered-articles (filters/filter-articles db/articles tag)]
@@ -80,12 +93,17 @@
         params (->> matches rest (map js/decodeURIComponent))]
     (.log js/console "handler" raw-path path)
     (-> (apply handler-function params)
-        (.then (fn [response-hiccup] 
+        (.then (fn [response]
                  (let [elapsed-time (- (.now js/Date) start-time)]
-                   (callback nil (clj->js {:statusCode 200
-                                           :headers {"Content-Type" "text/html; charset=utf-8"
-                                                     "Server-Timing" (str "t;dur=" elapsed-time)}
-                                           :body (hiccup-to-html response-hiccup)})))))
+                   ;; Check if response is already a complete HTTP response (e.g., redirect)
+                   (if (and (map? response) (:statusCode response))
+                     ;; Already a complete response - pass it through
+                     (callback nil (clj->js response))
+                     ;; Hiccup response - convert to HTML
+                     (callback nil (clj->js {:statusCode 200
+                                             :headers {"Content-Type" "text/html; charset=utf-8"
+                                                       "Server-Timing" (str "t;dur=" elapsed-time)}
+                                             :body (hiccup-to-html response)}))))))
         (.catch (fn [error]
                   (js/console.error "Error processing request:" error)
                   (callback nil (clj->js {:statusCode 500

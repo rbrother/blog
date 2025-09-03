@@ -4,6 +4,7 @@
 (def tags
   [{:name "Agile"}
    {:name "AI"}
+   {:name "AWS"}
    {:name "Career"}
    {:name "Chemistry"}
    {:name "Clojure"}
@@ -76,7 +77,7 @@
     :tags #{"Computers" "Programming" "Development Tools" "Clojure" "ClojureScript" "Re-Frame" "Markdown"}}
    {:name "Tech stack of this blog app"
     :id "blog-tech-stack", :date "2025-08-13"
-    :tags #{"Computers" "Programming" "Clojure" "ClojureScript" "Re-Frame" "Markdown" "SPA"}}
+    :tags #{"Computers" "Programming" "Clojure" "ClojureScript" "Re-Frame" "Markdown" "SPA" "AWS"}}
 
 
 
