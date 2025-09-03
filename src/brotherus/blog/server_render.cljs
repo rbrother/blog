@@ -98,7 +98,7 @@
                           content-hiccup]]]]))
 
 (defn render-article-page [article hiccup-content new-count]
-  (let [{:keys [tags date name views]} article
+  (let [{:keys [tags date name]} article
         mins (js/Math.round (/ (count (str hiccup-content)) 2000))]
     (base-html-template
      (str name " - Building Programs Blog")
