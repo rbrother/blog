@@ -16,11 +16,7 @@
   (let [metadata-url (str articles-raw-base article-id "/metadata.edn")]
     (-> (js/fetch metadata-url)
         (.then (fn [response]
-                 (if (.-ok response)
-                   (.text response)
-                   (do
-                     (js/console.warn "Metadata not found for" article-id "- ignoring folder")
-                     nil))))
+                 (when (.-ok response) (.text response))))
         (.then reader/read-string)
         (.catch (fn [_error] (js/Promise.resolve nil)) ;; Folders with no metadata.edn should be ignored
                 ))))
