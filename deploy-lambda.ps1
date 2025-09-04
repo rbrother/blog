@@ -38,48 +38,46 @@ try {
     exit 1
 }
 
-if (-not $SkipBuild) {
-    Write-Host "Installing dependencies..." -ForegroundColor Yellow
-    npm install
-    if ($LASTEXITCODE -ne 0) {
-        Write-Error "Failed to install npm dependencies"
-        exit 1
-    }
+Write-Host "Installing dependencies..." -ForegroundColor Yellow
+npm install
+if ($LASTEXITCODE -ne 0) {
+    Write-Error "Failed to install npm dependencies"
+    exit 1
+}
 
-    Write-Host "Building ClojureScript for Lambda..." -ForegroundColor Yellow
-    npm run release-lambda
-    if ($LASTEXITCODE -ne 0) {
-        Write-Error "Failed to build ClojureScript Lambda function"
-        exit 1
-    }
+Write-Host "Building ClojureScript for Lambda..." -ForegroundColor Yellow
+npm run release-lambda
+if ($LASTEXITCODE -ne 0) {
+    Write-Error "Failed to build ClojureScript Lambda function"
+    exit 1
+}
 
-    Write-Host "Installing production dependencies for Lambda..." -ForegroundColor Yellow
-    # Create package.json for lambda with only production dependencies
+Write-Host "Installing production dependencies for Lambda..." -ForegroundColor Yellow
+# Create package.json for lambda with only production dependencies
 
-    Copy-Item "package.json" "target/lambda/package.json" -Force
+Copy-Item "package.json" "target/lambda/package.json" -Force
 
-    # Install dependencies in the lambda directory
-    Push-Location "target/lambda"
-    try {
-        npm install --production --no-package-lock --no-optional
-        Write-Host "Lambda dependencies installed and optimized successfully" -ForegroundColor Green
-    } finally {
-        Pop-Location
-    }
+# Install dependencies in the lambda directory
+Push-Location "target/lambda"
+try {
+    npm install --production --no-package-lock --no-optional
+    Write-Host "Lambda dependencies installed and optimized successfully" -ForegroundColor Green
+} finally {
+    Pop-Location
+}
 
-    Write-Host "Creating Lambda deployment package..." -ForegroundColor Yellow
-    # Create the deployment zip
-    if (Test-Path "lambda-deployment.zip") {
-        Remove-Item "lambda-deployment.zip" -Force
-    }
+Write-Host "Creating Lambda deployment package..." -ForegroundColor Yellow
+# Create the deployment zip
+if (Test-Path "lambda-deployment.zip") {
+    Remove-Item "lambda-deployment.zip" -Force
+}
 
-    Push-Location "target/lambda"
-    try {        
-        bestzip ../../lambda-deployment.zip *
-        Write-Host "Lambda deployment package created: lambda-deployment.zip" -ForegroundColor Green
-    } finally {
-        Pop-Location
-    }
+Push-Location "target/lambda"
+try {        
+    bestzip ../../lambda-deployment.zip *
+    Write-Host "Lambda deployment package created: lambda-deployment.zip" -ForegroundColor Green
+} finally {
+    Pop-Location
 }
 
 if (-not $SkipInfra) {
@@ -113,17 +111,6 @@ if (-not $SkipInfra) {
         $LambdaName = terraform output -raw lambda_function_name
         $S3Bucket = terraform output -raw s3_bucket_name
 
-        # Upload static assets to S3
-        Write-Host "Uploading static assets to S3..." -ForegroundColor Yellow
-        if (Test-Path "../resources/public/images") {
-            aws s3 cp "../resources/public/images" "s3://$S3Bucket/images/" --recursive --region $Region
-            if ($LASTEXITCODE -eq 0) {
-                Write-Host "Static assets uploaded successfully!" -ForegroundColor Green
-            } else {
-                Write-Error "Failed to upload static assets to S3"
-            }
-        }
-
         Write-Host "Deployment completed successfully!" -ForegroundColor Green
         Write-Host "API Gateway URL: $ApiUrl" -ForegroundColor Cyan
         Write-Host "Lambda Function: $LambdaName" -ForegroundColor Cyan
@@ -132,33 +119,42 @@ if (-not $SkipInfra) {
     } finally {
         Pop-Location
     }
+} 
+
+Write-Host "Skipping infrastructure deployment" -ForegroundColor Yellow
+
+# Just update the Lambda function code if infrastructure already exists
+Write-Host "Updating Lambda function code..." -ForegroundColor Yellow
+$FunctionName = "brotherus-blog"
+
+$updateResult = aws lambda update-function-code --function-name $FunctionName --zip-file fileb://lambda-deployment.zip --region $Region 2>&1
+if ($LASTEXITCODE -eq 0) {
+    Write-Host "Lambda function code updated successfully!" -ForegroundColor Green
 } else {
-    Write-Host "Skipping infrastructure deployment" -ForegroundColor Yellow
-    
-    # Just update the Lambda function code if infrastructure already exists
-    Write-Host "Updating Lambda function code..." -ForegroundColor Yellow
-    $FunctionName = "brotherus-blog"
+    Write-Error "Failed to update Lambda function code"
+    Write-Error $updateResult
+    exit 1
+}
 
-    $updateResult = aws lambda update-function-code --function-name $FunctionName --zip-file fileb://lambda-deployment.zip --region $Region 2>&1
+# Upload static assets to S3 even when skipping infrastructure
+Write-Host "Uploading static assets to S3..." -ForegroundColor Yellow
+$S3Bucket = "brotherus-blog-blog-static-assets"
+if (Test-Path "resources/public/images") {
+    aws s3 cp "resources/public/images" "s3://$S3Bucket/images/" --recursive --region $Region
     if ($LASTEXITCODE -eq 0) {
-        Write-Host "Lambda function code updated successfully!" -ForegroundColor Green
+        Write-Host "Static assets uploaded successfully!" -ForegroundColor Green
     } else {
-        Write-Error "Failed to update Lambda function code"
-        Write-Error $updateResult
-        exit 1
+        Write-Error "Failed to upload static assets to S3"
     }
+}
 
-    # Upload static assets to S3 even when skipping infrastructure
-    Write-Host "Uploading static assets to S3..." -ForegroundColor Yellow
-    $S3Bucket = "brotherus-blog-blog-static-assets"
-    if (Test-Path "resources/public/images") {
-        aws s3 cp "resources/public/images" "s3://$S3Bucket/images/" --recursive --region $Region
-        if ($LASTEXITCODE -eq 0) {
-            Write-Host "Static assets uploaded successfully!" -ForegroundColor Green
-        } else {
-            Write-Error "Failed to upload static assets to S3"
-        }
-    }
+Write-Host "Invalidating CloudFront cache..." -ForegroundColor Yellow
+aws cloudfront create-invalidation --distribution-id E13505H1AVUV02 --paths "/*"
+if ($LASTEXITCODE -eq 0) {
+    Write-Host "Cache invalidation success!" -ForegroundColor Green
+} else {
+    Write-Error "Failed to invalidate cloudfront cache"
+    exit 1
 }
 
 Write-Host "Deployment process completed!" -ForegroundColor Green
