@@ -64,8 +64,8 @@
    [:div.product-table
     (map article-box articles)]])
 
-(defn home-content []
-  (let [filtered-articles (filters/filter-articles db/articles "Computers")]
+(defn home-content [articles]
+  (let [filtered-articles (filters/filter-articles articles "Computers")]
     [:div
      title-panel-component
      (articles-list filtered-articles)
@@ -81,10 +81,10 @@
        [:div [:i "– Antoine de Saint-Exupery"]]]]]))
 
 ;; Page renderers
-(defn render-home-page []
+(defn render-home-page [articles]
   (base-html-template "Building Programs"
                       [:div
-                       (home-content)]))
+                       (home-content articles)]))
 
 (defn render-about-page [content-hiccup]
   (base-html-template "About - Building Programs"
@@ -97,8 +97,8 @@
                          [:div {:style "max-width: 600px; justify-self: start; align-self: start;"}
                           content-hiccup]]]]))
 
-(defn render-article-page [article hiccup-content new-count]
-  (let [{:keys [tags date name]} article
+(defn render-article-page [article hiccup-content articles]
+  (let [{:keys [tags date name views]} article
         mins (js/Math.round (/ (count (str hiccup-content)) 2000))]
     (base-html-template
      (str name " - Building Programs Blog")
@@ -106,15 +106,15 @@
       [:div.article-container
        [:div.article-inner
         [:div.article
-         [:div.small.margin (str "Robert J. Brotherus  •  " date "  •  " mins " min read  •  " new-count " views")]
+         [:div.small.margin (str "Robert J. Brotherus  •  " date "  •  " mins " min read  •  " views " views")]
          [:div.article-content hiccup-content]
          [:div {:style "display: flex; align-items: center;"}
           [:div robert-small-pic]
-          [:div.small.margin (str "Robert J. Brotherus  •  " date "  •  " new-count " views")]]
+          [:div.small.margin (str "Robert J. Brotherus  •  " date "  •  " mins " min read  •  " views " views")]]
          [:div.small
           (interpose " • " (map (fn [tag] [:a {:href (str "/posts/" tag)} tag]) tags))]
          [:hr]]
-        (articles-list db/articles)]]])))
+        (articles-list articles)]]])))
 
 (defn render-posts-page [tag articles]
   (base-html-template

@@ -1,8 +1,9 @@
 # Deploy Lambda Blog Application
-# This script builds the ClojureScript Lambda function and deploys it to AWS.
+# This script builds the ClojureScript Lambda function and deploys it to AWS to:
+# https://dlsqhsyaah.execute-api.eu-north-1.amazonaws.com/
 # Terraform main.tf in the infrastructure directory defines resources up to and including the API Gateway.
-# On top of that we have manually created CloudFront distribution and Route53 alias record:
-# d1m95stb41x1uy.cloudfront.net
+# On top of that we have manually created CloudFront distribution and Route53 alias record
+# mapping it with caching to https://www.brotherus.net
 # Execution of the lambda can be slow with long articles, up to 18 sec for Infia article!
 # But CloudFront cache returns even that in ~300ms (and ~20 ms if in local cache),
 # also using Brotli compression.
