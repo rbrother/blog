@@ -2,7 +2,6 @@
   (:require-macros [hiccups.core :as hiccups :refer [html]])
   (:require
    [brotherus.blog.config :as config]
-   [brotherus.blog.db :as db]
    [brotherus.blog.filters :as filters]
    [brotherus.blog.styles :as styles]
    [garden.core :refer [css]]

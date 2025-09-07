@@ -1,11 +1,9 @@
 (ns brotherus.blog.lambda
   (:require
    [brotherus.blog.article :as article]
-   [brotherus.blog.db :as db]
    [brotherus.blog.filters :as filters]
    [brotherus.blog.github-api :as github]
    [brotherus.blog.server-render :as render :refer [hiccup-to-html]]
-   [clojure.string :as str]
    [medley.core :refer [find-first]]))
 
 ;; Article fetching
