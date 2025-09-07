@@ -102,7 +102,7 @@ The blog is now a **server-side rendered application** running on AWS Lambda, re
 
 ## Live Blog
 
-The blog is deployed at: **https://dlsqhsyaah.execute-api.eu-north-1.amazonaws.com/prod/**
+The blog is deployed at: **https://dlsqhsyaah.execute-api.eu-north-1.amazonaws.com/**
 
 ## Key Features
 

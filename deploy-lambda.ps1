@@ -149,11 +149,12 @@ if (Test-Path "resources/public/images") {
 }
 
 Write-Host "Invalidating CloudFront cache..." -ForegroundColor Yellow
-aws cloudfront create-invalidation --distribution-id E13505H1AVUV02 --paths "/*"
+$invalidationResult = aws cloudfront create-invalidation --distribution-id E22R2PYH1C7WEO --paths "/*" 2>&1
 if ($LASTEXITCODE -eq 0) {
     Write-Host "Cache invalidation success!" -ForegroundColor Green
 } else {
     Write-Error "Failed to invalidate cloudfront cache"
+    Write-Error $invalidationResult
     exit 1
 }
 
