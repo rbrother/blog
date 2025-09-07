@@ -5,10 +5,11 @@
 (def articles-repo-api "https://api.github.com/repos/rbrother/articles/contents/")
 (def articles-raw-base "https://raw.githubusercontent.com/rbrother/articles/refs/heads/main/")
 
-;; Cache for articles to avoid hitting GitHub API repeatedly
+;; Cache for articles to avoid hitting GitHub API repeatedly. This works even between
+;; lambda invocations because the lambda container is reused. Re-deploy the lambda to invalidate the cache.
 (def articles-cache (atom nil))
 (def cache-timestamp (atom 0))
-(def cache-ttl (* 5 60 1000)) ; 5 minutes in milliseconds
+(def cache-ttl (* 5 60 1000)) ; 5 mins in milliseconds
 
 (defn fetch-metadata
   "Fetch metadata.edn for a specific article"

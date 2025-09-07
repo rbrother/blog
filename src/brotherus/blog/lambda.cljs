@@ -72,7 +72,7 @@
 (defn handle-posts [tag]
   (-> (github/get-cached-articles)
       (.then (fn [articles]
-               (let [filtered-articles (filters/filter-articles articles tag)]
+               (let [filtered-articles (filters/filter-articles articles {:tag tag})]
                  (render/render-posts-page tag filtered-articles))))))
 
 (defn handle-not-found []

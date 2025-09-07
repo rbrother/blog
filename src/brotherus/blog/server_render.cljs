@@ -1,12 +1,11 @@
 (ns brotherus.blog.server-render
   (:require-macros [hiccups.core :as hiccups :refer [html]])
   (:require
+   [hiccups.runtime :as hiccupsrt] ;; This needed at runtime despite no visible reference
    [brotherus.blog.config :as config]
-   [brotherus.blog.filters :as filters]
+   [brotherus.blog.filters :as filters :refer [filter-articles]]
    [brotherus.blog.styles :as styles]
-   [garden.core :refer [css]]
-   [hiccups.runtime :as hiccupsrt]
-   [clojure.string :as str]))
+   [garden.core :refer [css]]))
 
 (defn hiccup-to-html [hiccup-data]
   (-> (str "<!DOCTYPE html>\n" (html hiccup-data))))
@@ -64,7 +63,7 @@
     (map article-box articles)]])
 
 (defn home-content [articles]
-  (let [filtered-articles (filters/filter-articles articles "Computers")]
+  (let [filtered-articles (filters/filter-articles articles {:blog "building-programs"})]
     [:div
      title-panel-component
      (articles-list filtered-articles)
@@ -97,7 +96,7 @@
                           content-hiccup]]]]))
 
 (defn render-article-page [article hiccup-content articles]
-  (let [{:keys [tags date name views]} article
+  (let [{:keys [tags date name views blog]} article
         mins (js/Math.round (/ (count (str hiccup-content)) 2000))]
     (base-html-template
      (str name " - Building Programs Blog")
@@ -113,7 +112,7 @@
          [:div.small
           (interpose " • " (map (fn [tag] [:a {:href (str "/posts/" tag)} tag]) tags))]
          [:hr]]
-        (articles-list articles)]]])))
+        (articles-list (filter-articles articles {:blog blog}))]]])))
 
 (defn render-posts-page [tag articles]
   (base-html-template
