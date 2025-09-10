@@ -28,13 +28,11 @@ The blog is now a **server-side rendered application** running on AWS Lambda, re
 ├── src/brotherus/blog/
 │   ├── lambda.cljs          # Main Lambda handler
 │   ├── server_render.cljs   # Server-side rendering functions
-│   ├── db.cljs             # Article data
 │   ├── filters.cljs        # Article filtering logic
 │   └── ...
 ├── infrastructure/
 │   └── main.tf             # Terraform configuration
 ├── resources/public/
-│   ├── static.css          # Styles
 │   └── images/             # Static images
 ├── target/lambda/          # Compiled Lambda function
 ├── deploy-lambda.ps1       # Main deployment script
@@ -102,7 +100,19 @@ The blog is now a **server-side rendered application** running on AWS Lambda, re
 
 ## Live Blog
 
-The blog is deployed at: **https://dlsqhsyaah.execute-api.eu-north-1.amazonaws.com/**
+The blog is deployed my deploy-lambda.ps1 script (using Terraform main.tf) to create resources 
+up to and including the API Gateway. This makes the app available at:
+**https://dlsqhsyaah.execute-api.eu-north-1.amazonaws.com/prod/**
+
+On top of that we have manually created CloudFront distribution and Route53 alias record
+mapping to https://www.brotherus.net
+In addition to providing nice URL, CloudFront provides caching and compression.
+Without caching, the lambda can be slow with long articles, up to 18 sec for Infia article!
+But CloudFront cache returns even that in ~300ms (and ~20 ms if in local cache).
+ X-Cache response header tells if CloudFront cache was used.
+CachePolicy default ttl is 24 hours.
+Cloudfront item can be invalidated at: https://us-east-1.console.aws.amazon.com/cloudfront/v4/home?region=eu-north-1#/distributions/E13505H1AVUV02/invalidations/create
+
 
 ## Key Features
 
