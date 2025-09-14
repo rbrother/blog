@@ -41,10 +41,10 @@
   (-> (fetch-articles-list)
       (.then (fn [article-ids]
                (js/Promise.all
-                (clj->js (->> article-ids
-                              (map fetch-metadata))))))
+                 (clj->js (->> article-ids
+                               (map fetch-metadata))))))
       (.then (fn [articles-array]
-               (js/console.log "Fetched articles:" (str articles-array) )
+               (js/console.log "Fetched articles:" (str articles-array))
                (->> (js->clj articles-array :keywordize-keys true)
                     (filter identity) ;; Remove folders with no metadata)
                     (sort-by :date #(compare %2 %1)))

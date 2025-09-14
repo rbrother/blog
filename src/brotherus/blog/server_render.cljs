@@ -1,11 +1,11 @@
 (ns brotherus.blog.server-render
   (:require-macros [hiccups.core :as hiccups :refer [html]])
   (:require
-   [hiccups.runtime :as hiccupsrt] ;; This needed at runtime despite no visible reference
-   [brotherus.blog.config :as config]
-   [brotherus.blog.filters :as filters :refer [filter-articles]]
-   [brotherus.blog.styles :as styles]
-   [garden.core :refer [css]]))
+    [hiccups.runtime :as hiccupsrt] ;; This needed at runtime despite no visible reference
+    [brotherus.blog.config :as config]
+    [brotherus.blog.filters :as filters :refer [filter-articles]]
+    [brotherus.blog.styles :as styles]
+    [garden.core :refer [css]]))
 
 (defn hiccup-to-html [hiccup-data]
   (-> (str "<!DOCTYPE html>\n" (html hiccup-data))))
@@ -99,42 +99,42 @@
   (let [{:keys [tags date name views blog]} article
         mins (js/Math.round (/ (count (str hiccup-content)) 2000))]
     (base-html-template
-     (str name " - Building Programs Blog")
-     [:div
-      [:div.article-container
-       [:div.article-inner
-        [:div.article
-         [:div.small.margin (str "Robert J. Brotherus  •  " date "  •  " mins " min read  •  " views " views")]
-         [:div.article-content hiccup-content]
-         [:div {:style "display: flex; align-items: center;"}
-          [:div robert-small-pic]
-          [:div.small.margin (str "Robert J. Brotherus  •  " date "  •  " mins " min read  •  " views " views")]]
-         [:div.small
-          (interpose " • " (map (fn [tag] [:a {:href (str "/posts/" tag)} tag]) tags))]
-         [:hr]]
-        (articles-list (filter-articles articles {:blog blog}))]]])))
+      (str name " - Building Programs Blog")
+      [:div
+       [:div.article-container
+        [:div.article-inner
+         [:div.article
+          [:div.small.margin (str "Robert J. Brotherus  •  " date "  •  " mins " min read  •  " views " views")]
+          [:div.article-content hiccup-content]
+          [:div {:style "display: flex; align-items: center;"}
+           [:div robert-small-pic]
+           [:div.small.margin (str "Robert J. Brotherus  •  " date "  •  " mins " min read  •  " views " views")]]
+          [:div.small
+           (interpose " • " (map (fn [tag] [:a {:href (str "/posts/" tag)} tag]) tags))]
+          [:hr]]
+         (articles-list (filter-articles articles {:blog blog}))]]])))
 
 (defn render-posts-page [tag articles]
   (base-html-template
-   (str tag " Posts - Building Programs")
-   [:div
-    title-panel-component
-    (articles-list articles)]))
+    (str tag " Posts - Building Programs")
+    [:div
+     title-panel-component
+     (articles-list articles)]))
 
-(defn render-404-page  []
+(defn render-404-page []
   (base-html-template
-   "Page Not Found - Building Programs"
-   [:div
-    [:div.article-inner
-     [:h1 "Page Not Found"]
-     [:p "The page you're looking for doesn't exist."]
-     [:p [:a {:href "/"} "Return to home page"]]]]))
+    "Page Not Found - Building Programs"
+    [:div
+     [:div.article-inner
+      [:h1 "Page Not Found"]
+      [:p "The page you're looking for doesn't exist."]
+      [:p [:a {:href "/"} "Return to home page"]]]]))
 
 (defn render-error-page [error]
   (base-html-template
-   "Error - Building Programs"
-   [:div
-    [:div.article-inner
-     [:h1 "An Error Occurred"]
-     [:p "Sorry, something went wrong while processing your request."]
-     [:p [:a {:href "/"} "Return to home page"]]]]))
+    "Error - Building Programs"
+    [:div
+     [:div.article-inner
+      [:h1 "An Error Occurred"]
+      [:p "Sorry, something went wrong while processing your request."]
+      [:p [:a {:href "/"} "Return to home page"]]]]))

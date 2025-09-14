@@ -1,10 +1,10 @@
 (ns brotherus.blog.lambda
   (:require
-   [brotherus.blog.article :as article]
-   [brotherus.blog.filters :as filters]
-   [brotherus.blog.github-api :as github]
-   [brotherus.blog.server-render :as render :refer [hiccup-to-html]]
-   [medley.core :refer [find-first]]))
+    [brotherus.blog.article :as article]
+    [brotherus.blog.filters :as filters]
+    [brotherus.blog.github-api :as github]
+    [brotherus.blog.server-render :as render :refer [hiccup-to-html]]
+    [medley.core :refer [find-first]]))
 
 ;; Article fetching
 (defn fetch-article-content
@@ -60,12 +60,12 @@
                      ;; Found by long ID - redirect to short ID
                      (let [short-id (:id article-info)]
                        (js/Promise.resolve
-                        {:statusCode 301
-                         :headers {"Location" (str "/post/" short-id)
-                                   "Content-Type" "text/html; charset=utf-8"}
-                         :body (str "<!DOCTYPE html><html><head><title>Redirecting...</title></head>"
-                                    "<body><p>Redirecting to <a href=\"/post/" short-id "\">/post/" short-id "</a></p>"
-                                    "<script>window.location.href='/post/" short-id "';</script></body></html>")}))
+                         {:statusCode 301
+                          :headers {"Location" (str "/post/" short-id)
+                                    "Content-Type" "text/html; charset=utf-8"}
+                          :body (str "<!DOCTYPE html><html><head><title>Redirecting...</title></head>"
+                                     "<body><p>Redirecting to <a href=\"/post/" short-id "\">/post/" short-id "</a></p>"
+                                     "<script>window.location.href='/post/" short-id "';</script></body></html>")}))
                      ;; Not found in either index - 404
                      (js/Promise.resolve (render/render-404-page)))))))))
 

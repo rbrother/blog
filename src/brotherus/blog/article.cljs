@@ -46,7 +46,7 @@
 
 (defn fix-image-src [src]
   (cond-> src
-    (relative-link? src) make-absolute-link))
+          (relative-link? src) make-absolute-link))
 
 (defn fix-image-links [img]
   (update-in img [1 :src] fix-image-src))
@@ -54,17 +54,17 @@
 (defn postprocess [hiccup]
   (->> hiccup
        (walk/postwalk
-        (fn [node]
-          (cond-> node
-            (is-element? node :a) set-link-new-tab
-            (is-element? node :img) fix-image-links)))))
+         (fn [node]
+           (cond-> node
+                   (is-element? node :a) set-link-new-tab
+                   (is-element? node :img) fix-image-links)))))
 
 (def marked-options
   #js {:emptyLangClass "hljs"
        :langPrefix "hljs language-"
        :highlight (fn [code lang]
                     (.-value (.highlight
-                              hljs code #js {:language (if (= lang "") "plaintext" lang)})))})
+                               hljs code #js {:language (if (= lang "") "plaintext" lang)})))})
 
 (defn markdown-to-hiccup [markdown context]
   (binding [*rendering-context* context]
