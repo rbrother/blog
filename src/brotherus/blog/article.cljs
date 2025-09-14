@@ -49,7 +49,9 @@
           (relative-link? src) make-absolute-link))
 
 (defn fix-image-links [img]
-  (update-in img [1 :src] fix-image-src))
+  ;; Also wrap to <a> to allow opening the image in a new tab
+  (let [url (fix-image-src (get-in img [1 :src]))]
+    [:a {:href url} (assoc-in img [1 :src] url)]))
 
 (defn postprocess [hiccup]
   (->> hiccup
