@@ -26,9 +26,6 @@
     [:title title]]
    [:body
     [:div#app.top-level
-     [:div.header
-      [:div [:a {:href "/"} "Building Programs Blog"]]
-      [:div.justify-end [:a {:href "/about"} "About"]]]
      content]]])
 
 (def title-panel-component
@@ -98,9 +95,12 @@
 (defn render-article-page [article hiccup-content articles]
   (let [{:keys [tags date name views blog]} article
         mins (js/Math.round (/ (count (str hiccup-content)) 2000))]
-    (base-html-template
-      (str name " - Building Programs Blog")
+    (base-html-template name
       [:div
+       (when (= blog "building-programs")
+         [:div.header
+          [:div [:a {:href "/"} "Building Programs Blog"]]
+          [:div.justify-end [:a {:href "/about"} "About"]]])
        [:div.article-container
         [:div.article-inner
          [:div.article
