@@ -2,7 +2,10 @@
   "name": "brotherus-blog",
   "scripts": {
     "watch-lambda": "npx shadow-cljs watch lambda",
-    "release-lambda": "npx shadow-cljs release lambda"
+    "watch-and-build": "node watch-and-build.js",
+    "release-lambda": "npx shadow-cljs release lambda",
+    "dev-server": "node dev-server.js",
+    "dev": "concurrently \"npm run watch-and-build\" \"npm run dev-server\""
   },
   "dependencies": {
     "highlight.js": "^11.11.1",
@@ -10,6 +13,7 @@
     "marked-highlight": "^2.2.1"
   },
   "devDependencies": {
+    "concurrently": "^9.2.1",
     "shadow-cljs": "2.28.19"
   }
 }

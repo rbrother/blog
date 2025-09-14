@@ -17,6 +17,7 @@
   {:target :node-library
    :output-to "target/lambda/index.js"
    :exports {:handler brotherus.blog.lambda/handler}
+   :devtools {:enabled false}
    :compiler-options
    {:optimizations :simple
     :target :nodejs}}}}

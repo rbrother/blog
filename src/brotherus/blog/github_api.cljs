@@ -44,11 +44,9 @@
                  (clj->js (->> article-ids
                                (map fetch-metadata))))))
       (.then (fn [articles-array]
-               (js/console.log "Fetched articles:" (str articles-array))
                (->> (js->clj articles-array :keywordize-keys true)
                     (filter identity) ;; Remove folders with no metadata)
-                    (sort-by :date #(compare %2 %1)))
-               ))))
+                    (sort-by :date #(compare %2 %1)))))))
 
 (defn get-cached-articles
   "Get articles from cache if valid, otherwise fetch from GitHub"
