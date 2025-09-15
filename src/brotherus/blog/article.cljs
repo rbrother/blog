@@ -61,6 +61,15 @@
                    (is-element? node :a) set-link-new-tab
                    (is-element? node :img) fix-image-links)))))
 
+(defn create-heading-id "Create a URL-friendly ID from heading text"
+  [text]
+  (-> text
+      (str/lower-case)
+      (str/replace #"[^\w\s-]" "") ; Remove non-word chars except spaces and hyphens
+      (str/replace #"\s+" "-") ; Replace spaces with hyphens
+      (str/replace #"-+" "-") ; Replace multiple hyphens with single
+      (str/replace #"^-|-$" ""))) ; Remove leading/trailing hyphens
+
 (def marked-options
   #js {:emptyLangClass "hljs"
        :langPrefix "hljs language-"
@@ -68,9 +77,26 @@
                     (.-value (.highlight
                                hljs code #js {:language (if (= lang "") "plaintext" lang)})))})
 
+(def heading-renderer
+  #js {:heading (fn [token]
+                  (this-as this
+                    (let [depth (.-depth token)
+                          tokens (.-tokens token)
+                          ; Parse the inline tokens to get the text content
+                          text (.parseInline (.-parser this) tokens)
+                          ; Create URL-friendly ID
+                          id (create-heading-id text)]
+                      (str "<h" depth " id=\"" id "\">"
+                           "<a href=\"#" id "\" class=\"heading-anchor\">"
+                           text
+                           "</a>"
+                           "</h" depth ">"))))})
+
 (defn markdown-to-hiccup [markdown context]
   (binding [*rendering-context* context]
     (let [mark (Marked. (markedHighlight marked-options))]
+      ; Configure the marked instance with custom renderer
+      (.use mark #js {:renderer heading-renderer}) ; Add custom heading renderer with anchors
       (some->> markdown
                ;; marked/parse Uses GitHub-flavored markdown spec https://github.github.com/gfm/ ,
                ;; a superset of CommonMark. This is good since GitHub can be used as a backup for

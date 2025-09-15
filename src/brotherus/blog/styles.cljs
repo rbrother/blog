@@ -51,6 +51,8 @@
    ["div.article pre code" {:overflow "visible", :background "#eee"}]
    ["div.article blockquote" {:margin-left 0, :border-left "5px #bbf solid", :padding-left "24px"
                               :font-style "italic"}]
+   ["div.article .heading-anchor" {:color "inherit", :text-decoration "none"}]
+   ["div.article .heading-anchor:hover" {:text-decoration "underline"}]
    [:div.product-table
     {:display "grid"
      :grid-template-columns "repeat(3, 300px)"
