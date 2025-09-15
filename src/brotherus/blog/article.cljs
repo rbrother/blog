@@ -32,9 +32,14 @@
   (and (vector? node)
        (= tag (first node))))
 
+(defn local-link? [url]
+  (str/starts-with? url "#"))
+
 (defn set-link-new-tab [a]
-  (let [[tag attr children] (parse-node a)]
-    (into [tag (assoc attr :target "_blank")] children)))
+  (let [[_tag attr _children] (parse-node a)]
+    (cond-> a
+            (not (local-link? (:href attr)))
+            (assoc-in [1 :target] "_blank"))))
 
 (def content-base
   "https://raw.githubusercontent.com/rbrother/articles/refs/heads/main")
@@ -53,22 +58,36 @@
   (let [url (fix-image-src (get-in img [1 :src]))]
     [:a {:href url} (assoc-in img [1 :src] url)]))
 
+(defn create-heading-id "Create a URL-friendly ID from heading text"
+  [text]
+  (-> text
+      (str/lower-case)
+      (str/replace #"[^\w\s-]" "")  ; Remove non-word chars except spaces and hyphens
+      (str/replace #"\s+" "-")      ; Replace spaces with hyphens
+      (str/replace #"-+" "-")       ; Replace multiple hyphens with single
+      (str/replace #"^-|-$" "")))   ; Remove leading/trailing hyphens
+
+(defn is-heading? "Check if a hiccup node is a heading (h1, h2, h3, h4, h5, h6)"
+  [node]
+  (and (vector? node)
+       (keyword? (first node))
+       (re-matches #"h[1-6]" (name (first node)))))
+
+(defn add-heading-anchor "Transform a heading hiccup element to include an anchor link"
+  [heading]
+  (let [[_tag _attr & children] (parse-node heading)
+        text-content (str (first children))
+        id (create-heading-id text-content)]
+    [:a {:id id, :href (str "#" id), :class "heading-anchor"} heading]))
+
 (defn postprocess [hiccup]
   (->> hiccup
        (walk/postwalk
          (fn [node]
            (cond-> node
                    (is-element? node :a) set-link-new-tab
-                   (is-element? node :img) fix-image-links)))))
-
-(defn create-heading-id "Create a URL-friendly ID from heading text"
-  [text]
-  (-> text
-      (str/lower-case)
-      (str/replace #"[^\w\s-]" "") ; Remove non-word chars except spaces and hyphens
-      (str/replace #"\s+" "-") ; Replace spaces with hyphens
-      (str/replace #"-+" "-") ; Replace multiple hyphens with single
-      (str/replace #"^-|-$" ""))) ; Remove leading/trailing hyphens
+                   (is-element? node :img) fix-image-links
+                   (is-heading? node) add-heading-anchor)))))
 
 (def marked-options
   #js {:emptyLangClass "hljs"
@@ -77,26 +96,9 @@
                     (.-value (.highlight
                                hljs code #js {:language (if (= lang "") "plaintext" lang)})))})
 
-(def heading-renderer
-  #js {:heading (fn [token]
-                  (this-as this
-                    (let [depth (.-depth token)
-                          tokens (.-tokens token)
-                          ; Parse the inline tokens to get the text content
-                          text (.parseInline (.-parser this) tokens)
-                          ; Create URL-friendly ID
-                          id (create-heading-id text)]
-                      (str "<h" depth " id=\"" id "\">"
-                           "<a href=\"#" id "\" class=\"heading-anchor\">"
-                           text
-                           "</a>"
-                           "</h" depth ">"))))})
-
 (defn markdown-to-hiccup [markdown context]
   (binding [*rendering-context* context]
     (let [mark (Marked. (markedHighlight marked-options))]
-      ; Configure the marked instance with custom renderer
-      (.use mark #js {:renderer heading-renderer}) ; Add custom heading renderer with anchors
       (some->> markdown
                ;; marked/parse Uses GitHub-flavored markdown spec https://github.github.com/gfm/ ,
                ;; a superset of CommonMark. This is good since GitHub can be used as a backup for
