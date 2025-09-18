@@ -54,17 +54,39 @@
    ["div.article .heading-anchor" {:color "inherit", :text-decoration "none"}]
    ["div.article .heading-anchor:hover" {:text-decoration "underline"}]
    [:div.product-table
-    {:display "grid"
-     :grid-template-columns "repeat(3, 300px)"
-     :gap "40px"}]
+    {:display "flex"
+     :flex-wrap "wrap"
+     :gap "40px"
+     :justify-content "center"}]
    [:div.links-table
     {:display "grid"
      :grid-template-columns "repeat(3, 300px)"
      :gap "8px"}]
-   [:div.article-box {:border "solid 1px gray"}]
-   [:div.crop-container {:width "298px" :height "160px" :overflow "hidden" :position "relative"}]
+   [:div.article-box
+    {:border "solid 1px gray"
+     :width "300px"
+     :min-width "280px"
+     :max-width "350px"
+     :flex "1 1 300px"}]
+   [:div.crop-container
+    {:width "100%"
+     :height "160px"
+     :overflow "hidden"
+     :position "relative"}]
    [:img.cropped-image {:width "100%" :height "100%" :object-fit "cover"}]
    [:img.large-photo {:width "50%"}]
    [:div.grid {:display "grid"}]
    [:div.justify-end {:justify-self "end"}]
-   [:div.justify-center {:justify-self "center", :text-align "center"}]])
+   [:div.justify-center {:justify-self "center", :text-align "center"}]
+
+   ;; Responsive media queries for article layout
+   ["@media (max-width: 768px)"
+    [:.product-table {:gap "20px"}]
+    [:.article-box {:width "100%" :min-width "280px" :max-width "none" :flex "1 1 280px"}]
+    [:.article-inner {:padding-left "16px" :padding-right "16px"}]]
+
+   ["@media (max-width: 480px)"
+    [:.product-table {:gap "16px"}]
+    [:.article-box {:width "100%" :min-width "250px" :flex "1 1 100%"}]
+    [:.crop-container {:height "140px"}]
+    [:.article-inner {:padding-left "8px" :padding-right "8px"}]]])
