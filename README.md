@@ -91,14 +91,6 @@ The blog is now a **server-side rendered application** running on AWS Lambda, re
    ```bash
    aws configure
    ```
-
-2. **Deploy infrastructure (first time only):**
-   ```bash
-   cd infrastructure
-   terraform init
-   terraform apply -var="environment=prod" -var="aws_region=eu-north-1"
-   ```
-
 3. **Deploy Lambda function:**
    ```bash
    .\deploy-lambda.ps1

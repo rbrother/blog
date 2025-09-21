@@ -62,10 +62,10 @@
   [text]
   (-> text
       (str/lower-case)
-      (str/replace #"[^\w\s-]" "")  ; Remove non-word chars except spaces and hyphens
-      (str/replace #"\s+" "-")      ; Replace spaces with hyphens
-      (str/replace #"-+" "-")       ; Replace multiple hyphens with single
-      (str/replace #"^-|-$" "")))   ; Remove leading/trailing hyphens
+      (str/replace #"[^\w\s-]" "") ; Remove non-word chars except spaces and hyphens
+      (str/replace #"\s+" "-") ; Replace spaces with hyphens
+      (str/replace #"-+" "-") ; Replace multiple hyphens with single
+      (str/replace #"^-|-$" ""))) ; Remove leading/trailing hyphens
 
 (defn is-heading? "Check if a hiccup node is a heading (h1, h2, h3, h4, h5, h6)"
   [node]
@@ -75,10 +75,48 @@
 
 (defn add-heading-anchor "Transform a heading hiccup element to include an anchor link"
   [heading]
-  (let [[_tag _attr & children] (parse-node heading)
-        text-content (str (first children))
+  (let [[_tag _attr children] (parse-node heading)
+        text-content (first children)
         id (create-heading-id text-content)]
     [:a {:id id, :href (str "#" id), :class "heading-anchor"} heading]))
+
+(defn extract-headings "Extract all headings from hiccup structure for TOC generation"
+  [hiccup]
+  (let [headings (atom [])]
+    (->> hiccup
+         (walk/postwalk
+           (fn [node]
+             (when (is-heading? node)
+               (let [[tag text-content] node
+                     id (create-heading-id text-content)
+                     level (js/parseInt (subs (name tag) 1))]
+                 (swap! headings conj {:text text-content
+                                       :id id
+                                       :level level})))
+             node)))
+    @headings))
+
+(defn generate-toc "Generate table of contents hiccup from headings"
+  [headings]
+  (when (seq headings)
+    [:div {:class "table-of-contents"}
+     [:h3 "Table of Contents"]
+     [:ul
+      (map (fn [{:keys [text id level]}]
+             [:li {:style (str "margin-left: " (* (- level 1) 20) "px")}
+              [:a {:href (str "#" id)} text]])
+           headings)]]))
+
+(defn replace-toc-markers "Replace [TOC] markers with table of contents"
+  [hiccup]
+  (.log js/console "replace-toc-markers")
+  (let [headings (extract-headings hiccup)
+        xx (.log js/console (str headings))
+        toc (generate-toc headings)]
+    (->> hiccup
+         (walk/postwalk
+           (fn [node]
+             (if (= node [:p "[TOC]"]) toc node))))))
 
 (defn postprocess [hiccup]
   (->> hiccup
@@ -87,7 +125,8 @@
            (cond-> node
                    (is-element? node :a) set-link-new-tab
                    (is-element? node :img) fix-image-links
-                   (is-heading? node) add-heading-anchor)))))
+                   (is-heading? node) add-heading-anchor)))
+       replace-toc-markers))
 
 (def marked-options
   #js {:emptyLangClass "hljs"

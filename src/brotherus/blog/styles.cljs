@@ -53,6 +53,15 @@
                               :font-style "italic"}]
    ["div.article .heading-anchor" {:color "inherit", :text-decoration "none"}]
    ["div.article .heading-anchor:hover" {:text-decoration "underline"}]
+   ["div.article .table-of-contents" {:background "#f8f9fa", :border "1px solid #e9ecef"
+                                      :border-radius "6px", :padding "20px", :margin "20px 0"}]
+   ["div.article .table-of-contents h3" {:margin-top "0", :margin-bottom "15px"
+                                         :color "#495057", :font-size "18px"}]
+   ["div.article .table-of-contents ul" {:list-style "none", :padding-left "0", :margin "0"}]
+   ["div.article .table-of-contents li" {:margin "8px 0", :line-height "1.4"}]
+   ["div.article .table-of-contents a" {:color "#007bff", :text-decoration "none"
+                                        :display "block", :padding "4px 0"}]
+   ["div.article .table-of-contents a:hover" {:text-decoration "underline", :color "#0056b3"}]
    [:div.product-table
     {:display "flex"
      :flex-wrap "wrap"
