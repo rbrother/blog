@@ -93,18 +93,15 @@
   [headings]
   (when (seq headings)
     [:div {:class "table-of-contents"}
-     [:h3 "Table of Contents"]
-     [:ul
-      (map (fn [{:keys [text id level]}]
-             [:li {:style (str "margin-left: " (* (- level 1) 20) "px")}
-              [:a {:href (str "#" id)} text]])
-           headings)]]))
+     [:ul (->> headings
+               (drop 1) ;; Ignore main header
+               (map (fn [{:keys [text id level]}]
+                      [:li {:class (str "toc-" level )}
+                       [:a {:href (str "#" id)} text]])))]]))
 
 (defn replace-toc-markers "Replace [TOC] markers with table of contents"
   [hiccup]
-  (.log js/console "replace-toc-markers")
   (let [headings (extract-headings hiccup)
-        xx (.log js/console (str headings))
         toc (generate-toc headings)]
     (->> hiccup
          (walk/postwalk
