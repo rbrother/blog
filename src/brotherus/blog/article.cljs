@@ -80,21 +80,14 @@
         id (create-heading-id text-content)]
     [:a {:id id, :href (str "#" id), :class "heading-anchor"} heading]))
 
-(defn extract-headings "Extract all headings from hiccup structure for TOC generation"
-  [hiccup]
-  (let [headings (atom [])]
-    (->> hiccup
-         (walk/postwalk
-           (fn [node]
-             (when (is-heading? node)
-               (let [[tag text-content] node
-                     id (create-heading-id text-content)
-                     level (js/parseInt (subs (name tag) 1))]
-                 (swap! headings conj {:text text-content
-                                       :id id
-                                       :level level})))
-             node)))
-    @headings))
+(defn extract-headings [hiccup]
+  (->> (tree-seq coll? seq hiccup)
+       (filter is-heading?)
+       (map (fn [[tag text-content]]
+              {:text text-content
+               :id (create-heading-id text-content)
+               :level (js/parseInt (subs (name tag) 1))}))
+       (into [])))
 
 (defn generate-toc "Generate table of contents hiccup from headings"
   [headings]
