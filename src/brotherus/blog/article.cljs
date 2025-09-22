@@ -1,6 +1,7 @@
 (ns brotherus.blog.article
   (:require [clojure.walk :as walk]
             [clojure.string :as str]
+            [com.rpl.specter :as s]
             ["marked" :refer [Marked]]
             ["marked-highlight" :refer [markedHighlight]]
             [taipei-404.html :refer [html->hiccup]]
@@ -81,11 +82,11 @@
     [:a {:id id, :href (str "#" id), :class "heading-anchor"} heading]))
 
 (defn extract-headings [hiccup]
-  (->> (tree-seq coll? seq hiccup)
-       (filter is-heading?)
-       (map (fn [[tag text-content]]
-              {:text text-content
-               :id (create-heading-id text-content)
+  (->> hiccup
+       (s/select (s/walker is-heading?))
+       (map (fn [[tag text]]
+              {:text text
+               :id (create-heading-id text)
                :level (js/parseInt (subs (name tag) 1))}))
        (into [])))
 
