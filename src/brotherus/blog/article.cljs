@@ -57,8 +57,14 @@
 
 (defn fix-image-links [img]
   ;; Also wrap to <a> to allow opening the image in a new tab
-  (let [url (fix-image-src (get-in img [1 :src]))]
-    [:a {:href url} (assoc-in img [1 :src] url)]))
+  (let [url (fix-image-src (get-in img [1 :src]))
+        has-width? (get-in img [1 :width])
+        linked [:a {:href url} (assoc-in img [1 :src] url)]]
+    (if has-width?
+      ;; <img> images with custom width are not automatically wrapped to [:p] by marked,
+      ;; so wrap here to utilize CSS styling in uniform manner.
+      [:p linked]
+      linked)))
 
 (defn create-heading-id "Create a URL-friendly ID from heading text"
   [text]
@@ -124,11 +130,13 @@
   (->> hiccup
        (walk/postwalk
          (fn [node]
-           (cond-> node
-                   (is-element? node :a) set-link-new-tab
-                   (is-element? node :img) fix-image-links
-                   (is-heading? node) add-heading-anchor)))
-       replace-toc-markers))
+           (cond
+             (is-element? node :a) (set-link-new-tab node)
+             (is-element? node :img) (fix-image-links node)
+             (is-heading? node) (add-heading-anchor node)
+             (vector? node) (vec (remove #{"\n"} node)) ;; Remove redundant newlines produced by marked (problem with windows CRLF...?)
+             :else node)))
+       replace-toc-markers
        (debug-print-form "After postprocessing")))
 
 (def marked-options
