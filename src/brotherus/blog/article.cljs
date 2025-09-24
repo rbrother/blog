@@ -74,6 +74,10 @@
        (keyword? (first node))
        (re-matches #"h[1-6]" (name (first node)))))
 
+(defn is-heading-2? [node]
+  (and (is-heading? node)
+       (= (first node) :h2)))
+
 (defn add-heading-anchor "Transform a heading hiccup element to include an anchor link"
   [heading]
   (let [[_tag _attr children] (parse-node heading)
@@ -83,7 +87,7 @@
 
 (defn extract-headings [hiccup]
   (->> hiccup
-       (s/select (s/walker is-heading?))
+       (s/select (s/walker is-heading-2?)) ;; TOC only for h2
        (map (fn [[tag text]]
               {:text text
                :id (create-heading-id text)
