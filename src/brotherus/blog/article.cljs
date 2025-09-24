@@ -99,11 +99,11 @@
   [headings]
   (when (seq headings)
     [:div {:class "table-of-contents"}
-     [:ul (->> headings
-               (drop 1) ;; Ignore main header
-               (map (fn [{:keys [text id level]}]
-                      [:li {:class (str "toc-" level )}
-                       [:a {:href (str "#" id)} text]])))]]))
+     (->> headings
+          (map (fn [{:keys [text id level]}]
+                 [:li {:class (str "toc-" level)}
+                  [:a {:href (str "#" id)} text]]))
+          (into [:ul]))]))
 
 (defn replace-toc-markers "Replace [TOC] markers with table of contents"
   [hiccup]
