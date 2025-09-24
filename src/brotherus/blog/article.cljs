@@ -1,6 +1,7 @@
 (ns brotherus.blog.article
   (:require [clojure.walk :as walk]
             [clojure.string :as str]
+            [cljs.pprint :as pp]
             [com.rpl.specter :as s]
             ["marked" :refer [Marked]]
             ["marked-highlight" :refer [markedHighlight]]
@@ -113,7 +114,13 @@
            (fn [node]
              (if (= node [:p "[TOC]"]) toc node))))))
 
+(defn debug-print-form [title form]
+  (js/console.log (str "---------- " title " ---------"))
+  (js/console.log (with-out-str (pp/pprint form)))
+  form)
+
 (defn postprocess [hiccup]
+  (debug-print-form "Before postprocessing" hiccup)
   (->> hiccup
        (walk/postwalk
          (fn [node]
@@ -122,6 +129,7 @@
                    (is-element? node :img) fix-image-links
                    (is-heading? node) add-heading-anchor)))
        replace-toc-markers))
+       (debug-print-form "After postprocessing")))
 
 (def marked-options
   #js {:emptyLangClass "hljs"
