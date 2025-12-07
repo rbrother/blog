@@ -95,9 +95,24 @@ echo -e "\033[32mLambda deployment package created: lambda-deployment.zip\033[0m
 if [ "$SKIP_INFRA" = false ]; then
     echo -e "\033[33mDeploying infrastructure with Terraform...\033[0m"
     
-    # Export AWS credentials for Terraform
-    export AWS_ACCESS_KEY_ID=$(aws configure get aws_access_key_id)
-    export AWS_SECRET_ACCESS_KEY=$(aws configure get aws_secret_access_key)
+    # Check if static credentials exist
+    ACCESS_KEY=$(aws configure get aws_access_key_id --profile default 2>/dev/null)
+    SECRET_KEY=$(aws configure get aws_secret_access_key --profile default 2>/dev/null)
+    
+    if [ -z "$ACCESS_KEY" ] || [ -z "$SECRET_KEY" ]; then
+        echo -e "\033[31mError: No static AWS credentials found in ~/.aws/credentials\033[0m" >&2
+        echo -e "\033[33mTerraform requires static IAM access keys (not SSO).\033[0m" >&2
+        echo -e "\033[33mTo set up credentials:\033[0m" >&2
+        echo -e "\033[36m  1. Create access keys in IAM: https://console.aws.amazon.com/iam/home#/users/rjb-admin\033[0m" >&2
+        echo -e "\033[36m  2. Run: aws configure --profile default\033[0m" >&2
+        echo -e "\033[36m  3. Enter the Access Key ID and Secret Access Key\033[0m" >&2
+        exit 1
+    fi
+    
+    # Export credentials for Terraform
+    export AWS_ACCESS_KEY_ID="$ACCESS_KEY"
+    export AWS_SECRET_ACCESS_KEY="$SECRET_KEY"
+    export AWS_PROFILE=default
     
     pushd "infrastructure" > /dev/null
     
