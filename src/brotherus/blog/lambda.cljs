@@ -6,6 +6,9 @@
     [brotherus.blog.server-render :as render :refer [hiccup-to-html]]
     [medley.core :refer [find-first]]))
 
+;; Cache for rendered article content (persists across Lambda invocations in same container)
+(def rendered-cache (atom {}))
+
 ;; Article fetching
 (defn fetch-article-content
   "Fetch article content from GitHub"
@@ -44,11 +47,18 @@
   (let [url (or (:url article-info) (str id "/article.md"))]
     (-> (increment-view-counter id)
         (.then (fn [new-count]
-                 (-> (fetch-article-content url)
-                     (.then (fn [markdown]
-                              (let [hiccup-content (article/markdown-to-hiccup markdown {:item-id id})]
-                                (render/render-article-page (assoc article-info :views new-count)
-                                                            hiccup-content articles))))))))))
+                 (if-let [cached-hiccup (get @rendered-cache id)]
+                   ;; Cache hit
+                   (js/Promise.resolve
+                     (render/render-article-page (assoc article-info :views new-count)
+                                                 cached-hiccup articles))
+                   ;; Cache miss
+                   (-> (fetch-article-content url)
+                       (.then (fn [markdown]
+                                (let [hiccup-content (article/markdown-to-hiccup markdown {:item-id id})]
+                                  (swap! rendered-cache assoc id hiccup-content)
+                                  (render/render-article-page (assoc article-info :views new-count)
+                                                              hiccup-content articles)))))))))))
 
 (defn redirect-to-short-id [short-id]
   (js/Promise.resolve
