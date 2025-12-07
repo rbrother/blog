@@ -109,7 +109,7 @@ resource "aws_lambda_function" "blog_lambda" {
   handler         = "index.handler"
   runtime         = "nodejs18.x"
   timeout         = 30
-  memory_size     = 512
+  memory_size     = 1769  # Increased from 512 for better CPU performance (1 full vCPU)
 
   source_code_hash = filebase64sha256("../lambda-deployment.zip")
 
