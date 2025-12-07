@@ -108,7 +108,7 @@ The blog is now a **server-side rendered application** running on AWS Lambda, re
 
 The blog is deployed my deploy-lambda.ps1 script (using Terraform main.tf) to create resources 
 up to and including the API Gateway. This makes the app available at:
-**https://dlsqhsyaah.execute-api.eu-north-1.amazonaws.com/**
+**https://358i0ec26g.execute-api.eu-north-1.amazonaws.com/*
 
 On top of that we have manually created CloudFront distribution and Route53 alias record
 mapping to https://www.brotherus.net
