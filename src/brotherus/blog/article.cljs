@@ -120,13 +120,7 @@
            (fn [node]
              (if (= node [:p "[TOC]"]) toc node))))))
 
-(defn debug-print-form [title form]
-  (js/console.log (str "---------- " title " ---------"))
-  (js/console.log (with-out-str (pp/pprint form)))
-  form)
-
 (defn postprocess [hiccup]
-  (debug-print-form "Before postprocessing" hiccup)
   (->> hiccup
        (walk/postwalk
          (fn [node]
@@ -136,8 +130,7 @@
              (is-heading? node) (add-heading-anchor node)
              (vector? node) (vec (remove #{"\n"} node)) ;; Remove redundant newlines produced by marked (problem with windows CRLF...?)
              :else node)))
-       replace-toc-markers
-       (debug-print-form "After postprocessing")))
+       replace-toc-markers))
 
 (def marked-options
   #js {:emptyLangClass "hljs"
