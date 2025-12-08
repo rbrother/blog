@@ -139,14 +139,23 @@
                     (.-value (.highlight
                                hljs code #js {:language (if (= lang "") "plaintext" lang)})))})
 
+(defn log [title data]
+    (js/console.log title)
+    data)
+
 (defn markdown-to-hiccup [markdown context]
   (binding [*rendering-context* context]
     (let [mark (Marked. (markedHighlight marked-options))]
       (some->> markdown
+               (log "parsing markup") ;; 54 ms for Infia-article on AWS
                ;; marked/parse Uses GitHub-flavored markdown spec https://github.github.com/gfm/ ,
                ;; a superset of CommonMark. This is good since GitHub can be used as a backup for
                ;; rendering and reading the blog-articles in absence of this webapp.
                (.parse mark)
+               (log "html-to-hiccup") ;; 4.7 s for Infia-article on AWS
                html->hiccup
                (into [:div])
-               postprocess))))
+               (log "postprocessing") ;; 160 ms for Infia-article on AWS
+               postprocess
+               (log "markdown-to-hiccup done")
+               ))))
