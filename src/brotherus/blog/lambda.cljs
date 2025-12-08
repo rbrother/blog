@@ -4,10 +4,17 @@
     [brotherus.blog.filters :as filters]
     [brotherus.blog.github-api :as github]
     [brotherus.blog.server-render :as render :refer [hiccup-to-html]]
-    [medley.core :refer [find-first]]))
+    [medley.core :refer [find-first]]
+    ["farmhash" :as farmhash]))
 
-;; Cache for rendered article content (persists across Lambda invocations in same container)
+;; Cache for rendered article content with content hash validation
+;; Format: {article-id {:hash "content-hash" :hiccup [rendered-hiccup]}}
 (def rendered-cache (atom {}))
+
+(defn hash-string
+  "Generate a fast hash from a string using FarmHash for cache validation"
+  [s]
+  (.hash64 farmhash s))
 
 ;; Article fetching
 (defn fetch-article-content
@@ -45,20 +52,30 @@
 
 (defn serve-article [article-info id articles]
   (let [url (or (:url article-info) (str id "/article.md"))]
-    (-> (increment-view-counter id)
-        (.then (fn [new-count]
-                 (if-let [cached-hiccup (get @rendered-cache id)]
-                   ;; Cache hit
-                   (js/Promise.resolve
-                     (render/render-article-page (assoc article-info :views new-count)
-                                                 cached-hiccup articles))
-                   ;; Cache miss
-                   (-> (fetch-article-content url)
-                       (.then (fn [markdown]
-                                (let [hiccup-content (article/markdown-to-hiccup markdown {:item-id id})]
-                                  (swap! rendered-cache assoc id hiccup-content)
-                                  (render/render-article-page (assoc article-info :views new-count)
-                                                              hiccup-content articles)))))))))))
+    (-> (js/Promise.all #js [(increment-view-counter id) (fetch-article-content url)])
+        (.then (fn [[new-count markdown]]
+                 (let [content-hash (hash-string markdown)
+                       cached-entry (get @rendered-cache id)
+                       cached-hash (:hash cached-entry)
+                       cached-hiccup (:hiccup cached-entry)]
+                   (if (and cached-hiccup (= content-hash cached-hash))
+                     ;; Cache hit with matching content hash
+                     (do
+                       (js/console.log "Cache HIT for" id "(hash:" content-hash ")")
+                       (js/Promise.resolve
+                         (render/render-article-page (assoc article-info :views new-count)
+                                                     cached-hiccup articles)))
+                     ;; Cache miss or content changed - process markdown
+                     (do
+                       (when cached-hiccup
+                         (js/console.log "Cache INVALIDATED for" id "(hash changed:" cached-hash "->" content-hash ")"))
+                       (when (not cached-hiccup)
+                         (js/console.log "Cache MISS for" id "(new article, hash:" content-hash ")"))
+                       (let [hiccup-content (article/markdown-to-hiccup markdown {:item-id id})]
+                         (swap! rendered-cache assoc id {:hash content-hash :hiccup hiccup-content})
+                         (js/Promise.resolve
+                           (render/render-article-page (assoc article-info :views new-count)
+                                                       hiccup-content articles)))))))))))
 
 (defn redirect-to-short-id [short-id]
   (js/Promise.resolve
