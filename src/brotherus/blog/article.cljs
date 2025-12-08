@@ -5,7 +5,7 @@
             [com.rpl.specter :as s]
             ["marked" :refer [Marked]]
             ["marked-highlight" :refer [markedHighlight]]
-            [taipei-404.html :refer [html->hiccup]]
+            [brotherus.blog.fast-html-parser :refer [html->hiccup]]
             ["highlight.js/lib/core" :as hljs]
             ["highlight.js/lib/languages/clojure" :as clj]
             ["highlight.js/lib/languages/basic" :as basic]
@@ -147,15 +147,9 @@
   (binding [*rendering-context* context]
     (let [mark (Marked. (markedHighlight marked-options))]
       (some->> markdown
-               (log "parsing markup") ;; 54 ms for Infia-article on AWS
                ;; marked/parse Uses GitHub-flavored markdown spec https://github.github.com/gfm/ ,
                ;; a superset of CommonMark. This is good since GitHub can be used as a backup for
                ;; rendering and reading the blog-articles in absence of this webapp.
                (.parse mark)
-               (log "html-to-hiccup") ;; 4.7 s for Infia-article on AWS
                html->hiccup
-               (into [:div])
-               (log "postprocessing") ;; 160 ms for Infia-article on AWS
-               postprocess
-               (log "markdown-to-hiccup done")
-               ))))
+               postprocess))))
