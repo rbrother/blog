@@ -179,15 +179,6 @@ else
         fi
     fi
 
-    echo -e "\033[33mInvalidating CloudFront cache...\033[0m"
-    INVALIDATION_RESULT=$(aws cloudfront create-invalidation --distribution-id E22R2PYH1C7WEO --paths "/*" 2>&1)
-    if [ $? -eq 0 ]; then
-        echo -e "\033[32mCache invalidation success!\033[0m"
-    else
-        echo -e "\033[31mFailed to invalidate cloudfront cache\033[0m" >&2
-        echo -e "\033[31m$INVALIDATION_RESULT\033[0m" >&2
-        exit 1
-    fi
 fi
 
 echo -e "\033[32mDeployment process completed!\033[0m"
