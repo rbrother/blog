@@ -55,9 +55,7 @@
     (-> (js/Promise.all #js [(increment-view-counter id) (fetch-article-content url)])
         (.then (fn [[new-count markdown]]
                  (let [content-hash (hash-string markdown)
-                       cached-entry (get @rendered-cache id)
-                       cached-hash (:hash cached-entry)
-                       cached-hiccup (:hiccup cached-entry)]
+                       {cached-hash :hash cached-hiccup :hiccup} (get @rendered-cache id)]
                    (if (and cached-hiccup (= content-hash cached-hash))
                      ;; Cache hit with matching content hash
                      (do
@@ -134,16 +132,18 @@
     (.log js/console "handler" raw-path path)
     (-> (apply handler-function params)
         (.then (fn [response]
-                 (let [elapsed-time (- (.now js/Date) start-time)]
-                   ;; Check if response is already a complete HTTP response (e.g., redirect)
-                   (if (and (map? response) (:statusCode response))
-                     ;; Already a complete response - pass it through
-                     (callback nil (clj->js response))
-                     ;; Hiccup response - convert to HTML
+                 (if (and (map? response) (:statusCode response))
+                   ;; Already a complete response - pass it through
+                   (callback nil (clj->js response))
+                   ;; Hiccup response - convert to HTML
+                   (let [html (hiccup-to-html response)
+                         ;; Calculate time last, after html conversion, so it would represent total processing
+                         elapsed-time (- (.now js/Date) start-time)]
                      (callback nil (clj->js {:statusCode 200
-                                             :headers {"Content-Type" "text/html; charset=utf-8"
-                                                       "Server-Timing" (str "t;dur=" elapsed-time)}
-                                             :body (hiccup-to-html response)}))))))
+                                             :headers    {"Content-Type"  "text/html; charset=utf-8"
+                                                          ;; Total lambda execution in AWS logs ~ Server-Timing+ 70 ms
+                                                          "Server-Timing" (str "t;dur=" elapsed-time)}
+                                             :body       html}))))))
         (.catch (fn [error]
                   (js/console.error "Error processing request:" error)
                   (callback nil (clj->js {:statusCode 500
