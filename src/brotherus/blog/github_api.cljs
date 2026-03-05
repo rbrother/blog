@@ -9,7 +9,7 @@
 ;; lambda invocations because the lambda container is reused. Re-deploy the lambda to invalidate the cache.
 (def articles-cache (atom nil))
 (def cache-timestamp (atom 0))
-(def cache-ttl (* 5 60 1000)) ; 5 mins in milliseconds
+(def cache-ttl (* 60 60 1000)) ; 1 hour in milliseconds
 
 (defn fetch-metadata
   "Fetch metadata.edn for a specific article"
@@ -63,6 +63,16 @@
                    (reset! articles-cache articles)
                    (reset! cache-timestamp now)
                    articles))))))
+
+(defn force-refresh-articles
+  "Bypass TTL and force a fresh fetch from GitHub, updating the cache"
+  []
+  (let [now (.now js/Date)]
+    (-> (fetch-all-articles)
+        (.then (fn [articles]
+                 (reset! articles-cache articles)
+                 (reset! cache-timestamp now)
+                 articles)))))
 
 (defn create-articles-index
   "Create index by :id for fast lookup"

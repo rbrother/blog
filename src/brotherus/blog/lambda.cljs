@@ -84,21 +84,27 @@
                 "<body><p>Redirecting to <a href=\"/post/" short-id "\">/post/" short-id "</a></p>"
                 "<script>window.location.href='/post/" short-id "';</script></body></html>")}))
 
+;; Look up article by id in articles list and serve it.
+;; On cache miss, force a refresh and retry once (refreshed? prevents infinite loop).
+(defn process-articles [id articles refreshed?]
+  (let [articles-index (github/create-articles-index articles)
+        articles-index2 (github/create-articles-index2 articles)]
+    (if-let [article-info (get articles-index id)]
+      ;; Found by short ID - serve the article
+      (serve-article article-info id articles)
+      (if-let [article-info (get articles-index2 id)]
+        ;; Found by long ID - redirect to short ID
+        (redirect-to-short-id (:id article-info))
+        (if refreshed?
+          ;; Already refreshed, article truly not found - 404
+          (js/Promise.resolve (render/render-404-page))
+          ;; Cache miss - force refresh and retry once
+          (-> (github/force-refresh-articles)
+              (.then (fn [fresh-articles] (process-articles id fresh-articles true)))))))))
+
 (defn handle-post [id]
-  ;; First fetch articles from GitHub API, then handle the request
   (-> (github/get-cached-articles)
-      (.then (fn [articles]
-               (let [articles-index (github/create-articles-index articles)
-                     articles-index2 (github/create-articles-index2 articles)]
-                 (if-let [article-info (get articles-index id)]
-                   ;; Found by short ID - serve the article
-                   (serve-article article-info id articles)
-                   ;; Not found by short ID - check if it's a long ID
-                   (if-let [article-info (get articles-index2 id)]
-                     ;; Found by long ID - redirect to short ID
-                     (redirect-to-short-id (:id article-info))
-                     ;; Not found in either index - 404
-                     (js/Promise.resolve (render/render-404-page)))))))))
+      (.then (fn [articles] (process-articles id articles false)))))
 
 (defn handle-posts [tag]
   (-> (github/get-cached-articles)
